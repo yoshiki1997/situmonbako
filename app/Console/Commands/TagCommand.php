@@ -29,7 +29,8 @@ class TagCommand extends Command
     public function handle()
     {
         $client = new \GuzzleHttp\Client();
-        $url = 'https://teratail.com/api/v1/tags';
+        
+        $url = 'https://teratail.com/api/v1/tags?limit=1000&page={$page}';
         $response = $client->request(
             'GET',
             $url,
@@ -42,14 +43,13 @@ class TagCommand extends Command
 
         $tags = json_decode($response->getBody(),true);
 
-        foreach($tags['tags'] as $tag){
-            Tag::updateOrCreate(
-                ['tag_name' => $tag['tag_name']],
-                [
-                    'explain' => $tag['explain'],
-                    'created_at' => $tag['created'],
-                ]
-            );
+        if(isset($tags))
+        {
+            foreach($tags['tags'] as $tag){
+                Tag::updateOrCreate(
+                    ['tag_name' => $tag['tag_name']],
+                );
+            }
         }
         
         $this->info('Tag data has been saved successfully!');

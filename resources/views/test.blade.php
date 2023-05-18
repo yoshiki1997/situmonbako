@@ -6,7 +6,7 @@
 <body>
     <h1>test</h1>
     @foreach($questions as $question)
-    <p>{{ $question['title'] }}</p>
+    <p><a href="{{ $question['url'] }}">{{ $question['title'] }}</a></p>
     @endforeach
 </body>
 </html>

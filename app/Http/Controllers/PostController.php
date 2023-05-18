@@ -157,6 +157,7 @@ class PostController extends Controller{
         $inputTags = str_replace("　"," ",$inputTags);
         $selectedTags = explode(',', $inputTags);
         $selectedTags = array_map('urlencode', $selectedTags);
+        $selectedTags = str_replace('+',' ',$selectedTags);
         
         // 取得件数
         $limit = $request->input('limit');
@@ -169,6 +170,7 @@ class PostController extends Controller{
 
         //タグが選択されている場合のみ処理を行う
         if(!empty($selectedTags)) {
+            
         // タグごとに質問を取得し結合する
         foreach ($selectedTags as $tag) {
 
@@ -176,7 +178,7 @@ class PostController extends Controller{
                 $apiUrl = "https://teratail.com/api/v1/tags/{$tag}/questions?limit={$limit}";
                 //dd($apiUrl);
 
-                /*try {*/
+                try {
                     // リクエスト送信と返却データの取得
                     $response = $client->request('GET', $apiUrl, [
                         'headers' => [
@@ -202,13 +204,11 @@ class PostController extends Controller{
                     if (count($questions) >= 100) {
                         break;
                     }
-                }/* catch (\Exception $e) {
-                    //エラーメッセージを取得
-                    $errorMessage = $e->getMessage();
-                    // エラーハンドリング
-                    // エラーメッセージを表示したり、適切な処理を行う
-                    return view('error', ['message' => $errorMessage]);
-                }*/
+                } catch (\Exception $e) {
+                    $message = $tag . 'タグはteratailにはありません。';
+                    return view('posts.tagssearch')->with('message', $message);
+                }
+            }    
             
         }
         
@@ -270,13 +270,22 @@ if ($response->successful()) {
     
     // 質問情報を解析して必要なデータを取得
     // ここでは例として、質問タイトルのリストを取得しています
-    $questionTitles = [];
-    $pattern = '/<a href="\/questions\/\d+"[^>]*>(.*?)<\/a>/';
+    $questions = [];
+    $pattern = '/<a href="\/questions\/(\d+)"[^>]*>\s*(.*?)\s*<\/a>/';
     preg_match_all($pattern, $html, $matches);
-    if (isset($matches[1])) {
-        $questionTitles = $matches[1];
+    if (isset($matches[1]) && isset($matches[2])) {
+        $questionIds = $matches[1];
+        $questionTitles = $matches[2];
+        for($i = 0; $i < count($questionIds); $i++){
+            $questions[] = [
+                'title' => $questionTitles[$i],
+                'url' => 'https://teratail.com/questions/' .$questionIds[$i]
+            ];
+        }
+        //dd($questions);
     }
-    return view('test', ['questionTitles' => $questionTitles]);
+    //dd($questions);
+    return view('test', ['questions' => $questions]);
 } else {
     // リクエストが失敗した場合はエラーメッセージを表示
     echo "Request failed. Error: " . $response->status();
