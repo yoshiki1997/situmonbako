@@ -70,10 +70,14 @@ class PostController extends Controller{
         $tags = json_decode($response_tags->getBody(), true);
 
         // index bladeに取得したデータを渡す
-        return view('posts.index')->with([
+        // index.vueに取得したデータを渡す
+        return Inertia::render('posts/index', [
             'questions' => $questions,
             'tags' => $tags['tags'],
+            'limit' => old('limit', 20),
+            'perPage' => old('perPage', 10),
         ]);
+
 
          /*// index bladeに取得したデータを渡す
          return view('posts.index')->with([
@@ -194,19 +198,49 @@ class PostController extends Controller{
                     // 取得した質問を結合し重複を削除する
                     if(isset($data['questions']))
                     {
-                        $questions = array_merge($questions, $data['questions']);
-                        $questions = array_unique($questions, SORT_REGULAR);
+
+                        $tagMatches = true;
+
+                        foreach($selectedTags as $selectedTags)
+                        {
+
+                            if(!in_array($selectedTags, $data['questions'][0]['tags']))
+                            {
+
+                                $tagMatches = false;
+                                break;
+
+                            }
+                            
+                        }
+
+                        if($tagMatches)
+                        {
+
+                            $questions = array_merge($questions, $data['questions']);
+                            $questions = array_unique($questions, SORT_REGULAR);
+
+                        }
+
                     }else{
+
                         $message = $tag . 'タグはteratailにはありません。';
                         return view('posts.tagssearch')->with('message', $message);
+
                     }
+
                     // 最大100件の質問を超えた場合はループを終了する
                     if (count($questions) >= 100) {
+
                         break;
+
                     }
+
                 } catch (\Exception $e) {
+
                     $message = $tag . 'タグはteratailにはありません。';
                     return view('posts.tagssearch')->with('message', $message);
+
                 }
             }    
             
