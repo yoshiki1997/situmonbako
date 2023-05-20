@@ -51,6 +51,27 @@ class PostController extends Controller{
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         //tag一覧の取得
         //まずタグ取得用のURLを追加
         $url_tags = 'https://teratail.com/api/v1/tags';
@@ -157,9 +178,13 @@ class PostController extends Controller{
         $inputTags = str_replace("　"," ",$inputTags);
         $selectedTags = explode(',', $inputTags);
         $selectedTags = array_map('urlencode', $selectedTags);
+        $firstTag = reset($selectedTags);
         
         // 取得件数
         $limit = $request->input('limit');
+
+        // ページ設定
+        $page = 1;
 
         // クライアントインスタンス生成
         $client = new \GuzzleHttp\Client();
@@ -167,22 +192,29 @@ class PostController extends Controller{
         // 質問格納用の配列
         $questions = [];
 
+        
+
         //タグが選択されている場合のみ処理を行う
         if(!empty($selectedTags)) {
         // タグごとに質問を取得し結合する
-        foreach ($selectedTags as $tag) {
+        
 
-                // teratailのAPIエンドポイント
-                $apiUrl = "https://teratail.com/api/v1/tags/{$tag}/questions?limit={$limit}";
-                //dd($apiUrl);
+            // teratailのAPIエンドポイント
+            $apiUrl = "https://teratail.com/api/v1/tags/{$firstTag}/questions?limit=100&page={$page}";
+            //dd($apiUrl);
 
-                /*try {*/
-                    // リクエスト送信と返却データの取得
-                    $response = $client->request('GET', $apiUrl, [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . config('services.teratail.token')
-                        ],
-                    ]);
+                try {
+                        // リクエスト送信と返却データの取得
+                        $response = $client->request('GET', $apiUrl, [
+                            'headers' => [
+                                'Authorization' => 'Bearer ' . config('services.teratail.token')
+                            ],
+                        ]);
+                    } catch (\Exception $e) {
+                        
+                        $message = $firstTag . 'タグはteratailにはありません。';
+                        return view('posts.tagssearch')->with('message', $message);
+                    }
                     
                     // API通信で取得したデータはJSON形式なのでデコードする
                     $data = json_decode($response->getBody(), true);
@@ -192,6 +224,57 @@ class PostController extends Controller{
                     // 取得した質問を結合し重複を削除する
                     if(isset($data['questions']))
                     {
+                        // タグの出現回数をカウントする配列を初期化
+                        $tagCounts = [];
+                        $TagCountsid = 0;
+
+                        // 一つ目のタグで取得した１００件の質問に
+                        // ほかのタグがマッチしているかの確認
+                        $questionKey = 0;
+                        foreach($data['questions'] as $question)
+                        {
+                            $count = 0;
+                            foreach($question['tags'] as $tag)
+                            {
+                                if(in_array(strtolower($tag), array_map('strtolower', $selectedTags)))
+                                {
+                                    //dd($tag,$selectedTags,in_array($tag,$selectedTags,true));
+                                    $count = $count + 1;
+                                }
+                                //dd($count);
+                            }
+                            $tagCounts[$TagCountsid] = $count;
+                            $TagCountsid++;
+                        }
+
+                        //$tagCounts[$TagCountsid] = $count;
+                        //$TagCountsid++;
+                        // すべてのタグがマッチしていない場合、質問を配列から削除する
+                        //dd($tagCounts);
+                        //$questionKey = 0;
+                        foreach($tagCounts as $questionKey => $tagCount)
+                        {
+                            //dd($tagCount !== count($selectedTags),$tagCounts,$tagCount,count($selectedTags));   
+                            if ($tagCount !== count($selectedTags))
+                            {
+                                //dd($data['questions']);
+                                //dd($tagCount,count($selectedTags));
+                                unset($data['questions'][$questionKey]);
+                                //dd($data['questions']);
+                                //$questionKey++;
+                            }
+                        }
+                        
+                        
+                        //$data['questions'] = array_values($data['questions']);
+
+                    } 
+
+                    $questions = $data['questions'];
+                    //dd($questions);
+                    //$page++;
+
+                    /*{
                         $questions = array_merge($questions, $data['questions']);
                         $questions = array_unique($questions, SORT_REGULAR);
                     }else{
@@ -201,8 +284,8 @@ class PostController extends Controller{
                     // 最大100件の質問を超えた場合はループを終了する
                     if (count($questions) >= 100) {
                         break;
-                    }
-                }/* catch (\Exception $e) {
+                    }*/
+                /* catch (\Exception $e) {
                     //エラーメッセージを取得
                     $errorMessage = $e->getMessage();
                     // エラーハンドリング
