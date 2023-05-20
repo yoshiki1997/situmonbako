@@ -51,27 +51,6 @@ class PostController extends Controller{
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
         //tag一覧の取得
         //まずタグ取得用のURLを追加
         $url_tags = 'https://teratail.com/api/v1/tags';
