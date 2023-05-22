@@ -11,7 +11,8 @@
           <div class="searchbox">
               <form action="/tagssearch" method="GET">
                   @csrf <!-- CSRFトークンを追加 -->
-                  <input type="text" name="tags" placeholder="キーワードを入れてください">
+                  <input type="text" name="keyword" placeholder="キーワードを入れてください"><br>
+                  <input type="text" name="tags" placeholder="タグを入れてください">
                   <button type="submit">検索</button> <!-- キーワード検索ボタンを追加 --><br>
                   <input type="number" name="limit" value="{{ old('limit') !== null ? old('limit') : 20 }}" max="100" min="1" />質問数<br>
                   <input type="number" name="perPage" value="{{ old('perPage') !== null ? old('perPage') : 10 }}" max="100" min="1" />表示する数
@@ -25,6 +26,8 @@
             @endforeach
           </div>
           <p>{{ $questions->links() }}</p>
+
+          
 
         </div>
       </div>

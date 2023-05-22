@@ -13,14 +13,15 @@
           <div class="tags">
               <form action="/tagssearch" method="GET">
                   @csrf <!-- CSRFトークンを追加 -->
-                  <input type="text" name="tags" placeholder="キーワードを入れてください">
-                  <input type="number" name="limit" value="{{ old('limit') !== null ? old('limit') : 20 }}" max="100" min="1" />質問数
-                  <input type="number" name="perPage" value="{{ old('perPage') !== null ? old('perPage') : 10 }}" max="100" min="1" />表示する数
+                  <input type="text" name="keyword" placeholder="キーワードを入れてください"><br>
+                  <input type="text" name="tags" placeholder="タグを入れてください"><br>
+                  <input type="number" name="limit" value="{{ old('limit') !== null ? old('limit') : 20 }}" max="100" min="1" />質問数<br>
+                  <input type="number" name="perPage" value="{{ old('perPage') !== null ? old('perPage') : 10 }}" max="100" min="1" />表示する数<br>
                   <button type="submit">検索</button> <!-- キーワード検索ボタンを追加 -->
               </form>
           </div>
           @if(isset($message))
-          <div class="error">{{ $message }}</div>>
+          <div class="error">{{ $message }}</div>
           @endif
           <div class="card-body">
           @foreach($questions ?? [] as $question)

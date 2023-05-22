@@ -69,6 +69,9 @@ class PostController extends Controller{
         //タグのデコード
         $tags = json_decode($response_tags->getBody(), true);
 
+        // ここに別のファイルから読み込んだYoutubeAPIGetメソッドを入力
+        YoutubeAPIGet();
+
         // index bladeに取得したデータを渡す
         return view('posts.index')->with([
             'questions' => $questions,
