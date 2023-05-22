@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Http;
 
+require_once('index.php');
+
 
 class PostController extends Controller{
     public function index(Tag $tags)
@@ -68,7 +70,7 @@ class PostController extends Controller{
 
         //タグのデコード
         $tags = json_decode($response_tags->getBody(), true);
-
+        //dd($questions);
         // index bladeに取得したデータを渡す
         return view('posts.index')->with([
             'questions' => $questions,
@@ -172,7 +174,7 @@ class PostController extends Controller{
         $questions = [];
 
         
-
+        
         //タグが選択されている場合のみ処理を行う
         if(!empty($selectedTags)) {
         // タグごとに質問を取得し結合する
