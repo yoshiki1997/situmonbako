@@ -31,6 +31,11 @@
             </div>
 
 
+            <div>
+              <p>{{ old('tag') !== null ? old('tag') : '' }}</p>
+            </div>
+
+
             <div class="container">
               <div class="card-body mx-4">
                   <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -63,11 +68,7 @@
                 <div class="flex items-center justify-center">
                     <div class="flex">
                       @if(isset($questions))
-                        @if($darkMode)
-                            {{ $questions->links('pagination::tailwind', ['class' => 'text-white']) }}
-                        @else
-                            {{ $questions->links('pagination::tailwind') }}
-                        @endif
+                        {{ $questions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
                       @else
                         <p>何もありませんでした</p>
                       @endif

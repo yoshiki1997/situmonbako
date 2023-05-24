@@ -68,7 +68,37 @@
             </div>
 
 
-            
+            <div class="container">
+              <div class="card-body mx-4">
+                  <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      @foreach($datas ?? [] as $data)
+                      <a href="https://www.youtube.com/watch?v={{ $data['id']['videoId'] }}">
+                        <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 ">
+                              
+                        <div class="relative">
+                            <img src="{{ $data['snippet']['thumbnails']['default']['url'] }}" alt="Video Thumbnail">
+                            <div class="absolute inset-0 bg-black opacity-0 hover:opacity-50 transition-opacity">
+                                <div class="flex items-center justify-center h-full">
+                                    <svg class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 6L4 12l5 6M20 12h-8m4 0a4 4 0 110-8 4 4 0 010 8z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                            <h2>{{ $data['snippet']['title'] }}</h2>
+                            <p>{{ $data['snippet']['description'] }}</p>
+                            <h2>https://www.youtube.com/watch?v={{ $data['id']['videoId'] }}</h2>
+                            
+                            {{-- <div>
+                            <img src="{{ $data['snippet']['thumbnails']['default']['url'] }}" alt="Video Thumbnail">
+                            </div> --}}
+                        </li>
+                        </a>
+                      @endforeach
+                  </ul>
+              </div>
+            </div>
 
 
         </div>

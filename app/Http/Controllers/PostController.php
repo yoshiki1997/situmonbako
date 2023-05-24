@@ -10,6 +10,7 @@ use App\Models\Tag;
 use Illuminate\Support\Facades\Http;
 
 require_once('index.php');
+require_once('YoutubeGetAPI.php');
 
 
 class PostController extends Controller{
@@ -72,9 +73,18 @@ class PostController extends Controller{
         $tags = json_decode($response_tags->getBody(), true);
         //dd($questions);
         // index bladeに取得したデータを渡す
+        
+        $youtubeclient = new YoutubeGetAPI();
+        $keyword = 'game';
+        $data = $youtubeclient->YoutubeGetAPI($keyword);
+        //dd($data);
+
+        
+
         return view('posts.index')->with([
             'questions' => $questions,
             'tags' => $tags['tags'],
+            'datas' => $data,
         ]);
 
          /*// index bladeに取得したデータを渡す
