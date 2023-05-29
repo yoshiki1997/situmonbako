@@ -16,6 +16,20 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
+                <!-- Index Links -->
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('index')" :active="request()->routeIs('index')">
+                        {{ __('質問一覧') }}
+                    </x-nav-link>
+                </div>
+
+                <!-- Index Links -->
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('index')" :active="request()->routeIs('index')">
+                        {{ __('質問投稿') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -40,6 +54,7 @@
                         </x-dropdown-link>
 
                         <!-- Authentication -->
+                        @if (Auth::check())
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
@@ -49,6 +64,11 @@
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
+                        @else
+                        <x-dropdown-link :href="route('login')">
+                                {{ __('Log in') }}
+                        </x-dropdown-link>
+                        @endif
                     </x-slot>
                 </x-dropdown>
             </div>

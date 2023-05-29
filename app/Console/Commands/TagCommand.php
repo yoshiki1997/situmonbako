@@ -29,29 +29,39 @@ class TagCommand extends Command
     public function handle()
     {
         $client = new \GuzzleHttp\Client();
-        $url = 'https://teratail.com/api/v1/tags';
-        $response = $client->request(
-            'GET',
-            $url,
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . config('services.teratail.token')
-                ]
-            ]
-        );
+        $url = 'https://teratail.com/api/v1/tags?limit=100&page=';
 
-        $tags = json_decode($response->getBody(),true);
+        try{
 
-        foreach($tags['tags'] as $tag){
-            Tag::updateOrCreate(
-                ['tag_name' => $tag['tag_name']],
-                [
-                    'explain' => $tag['explain'],
-                    'created_at' => $tag['created'],
-                ]
-            );
+            for($c = 1;$c<=18;$c++){
+                $response = $client->request(
+                    'GET',
+                    $url . $c,
+                    [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . config('services.teratail.token')
+                        ]
+                    ]
+                );
+
+                $tags = json_decode($response->getBody(),true);
+
+                foreach($tags['tags'] as $tag){
+                    Tag::updateOrCreate(
+                        ['tag_name' => $tag['tag_name']],
+                        [
+                            'explain' => $tag['explain'],
+                            'created_at' => $tag['created'],
+                        ]
+                    );
+                     // タグ名の表示
+                echo $tag['tag_name'] . "\n";
+                }
+            }
+            
+            $this->info('Tag data has been saved successfully!');
+        } catch (GuzzleException $e) {
+            $this->info('SOPT ERROE!');
         }
-        
-        $this->info('Tag data has been saved successfully!');
     }
 }

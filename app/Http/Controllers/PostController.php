@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Http;
 
 require_once('index.php');
 require_once('YoutubeGetAPI.php');
+require_once('StackExchangeGetAPI.php');
+require_once('QittaGetAPI.php');
+require_once('Pagenator.php');
 
 
 class PostController extends Controller{
@@ -33,7 +36,7 @@ class PostController extends Controller{
                 ],
 
                 'query' => [
-                    'limit' => 100
+                    'limit' => 10
                 ]
             ]
         );
@@ -43,7 +46,7 @@ class PostController extends Controller{
         $questions = json_decode($response->getBody(), true);
 
         //ページネイト処理
-        $currentPage = request()->get('page', 1);
+        /*$currentPage = request()->get('page', 1);
         $perPage = 10;
         $offset = ($currentPage - 1) * $perPage;
         $questions = new LengthAwarePaginator(
@@ -52,7 +55,10 @@ class PostController extends Controller{
             $perPage,
             $currentPage,
             ['path' => request()->url(), 'query' => request()->query()]
-        );
+        );*/
+
+        $Pagenator = new Pagenator();
+        $questions = $Pagenator->Pagenator($questions);
 
         //tag一覧の取得
         //まずタグ取得用のURLを追加
@@ -77,14 +83,28 @@ class PostController extends Controller{
         $youtubeclient = new YoutubeGetAPI();
         $keyword = 'game';
         $data = $youtubeclient->YoutubeGetAPI($keyword);
+        $data = $Pagenator->youtubePagenator($data);
         //dd($data);
 
+        $qittaclient = new QittaGetAPI();
+        $qittaposts = $qittaclient->QittaGetTrend();
+        $qittaposts = $Pagenator->QittaPagenator($qittaposts);
+        //$qittaposts = $Pagenator->youtubePagenator()
+
+        // 使用者のユーザーID
+        if(auth()->check()) {
+            $userId = auth()->user()->id;
+        } else {
+            $userId = null;
+        }
         
 
         return view('posts.index')->with([
             'questions' => $questions,
             'tags' => $tags['tags'],
             'datas' => $data,
+            'qittaposts' => $qittaposts,
+            'user_id' => $userId,
         ]);
 
          /*// index bladeに取得したデータを渡す
