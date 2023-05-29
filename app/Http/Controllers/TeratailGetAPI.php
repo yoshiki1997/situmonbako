@@ -1,14 +1,26 @@
 <?php
 
-class index {
+namespace App\Http\Controllers;
 
-    public function index(){
-        // クライアントインスタンス生成
-        $client = new \GuzzleHttp\Client();
-        
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+
+class TeratailGetAPI {
+
+    protected $client;
+    protected $apiKey;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+        $this->apiKey = config('services.qitta.token');
+    }
+
+    public function TerataliGetAPI(){
+    
         // GET通信するURL
         $url = 'https://teratail.com/api/v1/questions';
-
+    
         // リクエスト送信と返却データの取得
         // Bearerトークンにアクセストークンを指定して認証を行う
         $response = $client->request(
@@ -24,27 +36,19 @@ class index {
                 ]
             ]
         );
-
+    
         // API通信で取得したデータはjson形式なので
         // PHPファイルに対応した連想配列にデコードする
         $questions = json_decode($response->getBody(), true);
 
-        //ページネイト処理
-        $currentPage = request()->get('page', 1);
-        $perPage = 10;
-        $offset = ($currentPage - 1) * $perPage;
-        $questions = new LengthAwarePaginator(
-            array_slice($questions['questions'], $offset, $perPage),
-            count($questions['questions']),
-            $perPage,
-            $currentPage,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        return $questions
+    }
 
-        //tag一覧の取得
-        //まずタグ取得用のURLを追加
-        $url_tags = 'https://teratail.com/api/v1/tags';
 
+    public function TeratailGetTags{
+    $url_tags = 'https://teratail.com/api/v1/tags';
+
+    
         //続いてトークン承認を記述
         $response_tags = $client->request(
             'GET',
@@ -59,7 +63,6 @@ class index {
         //タグのデコード
         $tags = json_decode($response_tags->getBody(), true);
 
-        return [$questions,$tag];
+        $return $tags
     }
-
 }

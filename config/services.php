@@ -35,4 +35,11 @@ return [
         'token' => env('TERATAIL_ACCESS_TOKEN')
     ],
 
+    'youtube' => [
+        'api_key' => env('YOUTUBE_API_KEY')
+    ],
+
+    'stackexchange' => [
+        'token' => env('STACK_EXCHANGE_APIKEY') 
+    ]
 ];

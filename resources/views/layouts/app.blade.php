@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>text
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
@@ -16,7 +16,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-100 text-black dark:text-white">
+    <body class="font-sans antialiased bg-gray-100 text-black dark:text-white dark">
         <div id="app" class="min-h-screen bg-gray-100 dark:bg-gray-700">
             @include('layouts.navigation')
 
