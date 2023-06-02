@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -36,7 +37,7 @@ class PostController extends Controller{
                 ],
 
                 'query' => [
-                    'limit' => 10
+                    'limit' => 100
                 ]
             ]
         );
@@ -91,6 +92,16 @@ class PostController extends Controller{
         $qittaposts = $Pagenator->QittaPagenator($qittaposts);
         //$qittaposts = $Pagenator->youtubePagenator()
 
+        
+        $rankings = Like::select('*', \DB::raw('count(*) as count'))
+            ->groupBy('url')
+            ->orderByDesc('count')
+            ->get();
+           
+        $rankings = $rankings->toArray();//dd($rankings);
+        $rankings = $Pagenator->QittaPagenator($rankings);
+
+
         // 使用者のユーザーID
         if(auth()->check()) {
             $userId = auth()->user()->id;
@@ -98,13 +109,17 @@ class PostController extends Controller{
             $userId = null;
         }
         
+        // ユーザーのいいね情報の取得
+        $likes = Like::Where('user_id',$userId)->pluck('url')->toArray();
 
         return view('posts.index')->with([
             'questions' => $questions,
             'tags' => $tags['tags'],
             'datas' => $data,
             'qittaposts' => $qittaposts,
+            'rankings' => $rankings,
             'user_id' => $userId,
+            'likes' => $likes,
         ]);
 
          /*// index bladeに取得したデータを渡す
@@ -145,11 +160,15 @@ class PostController extends Controller{
 
     public function search(Request $request)
     {
-        $search = $request->input("search");
+        $search = $request->input("keyword");
+
+        $tag = $request->input("tags");
+
+        $limit = $request->input('limit');
 
         $client = new \GuzzleHttp\Client();
 
-        $url = "https://teratail.com/api/v1/questions";
+        $url = "https://teratail.com/api/v1/tags/{$tag}/questions";
 
         $response = $client->request(
             'GET',
@@ -160,18 +179,44 @@ class PostController extends Controller{
                 ],
                 
                 'query' => [
-                    'query' => $search,
-                    'limit' => 20,
-                    'sort' => 'created',
-                    'order' => 'desc'
+                    'limit' => $limit,
+                    //'sort' => 'created',
+                    //'order' => 'desc'
                 ]
             ]
         );
 
         $questions = json_decode($response->getBody(),true);
 
+        $Pagenator = new Pagenator();
+        $questions = $Pagenator->Pagenator($questions);
+
+        $youtubeclient = new YoutubeGetAPI();
+        $data = $youtubeclient->YoutubeGetAPI($search);
+        $data = $Pagenator->youtubePagenator($data);
+        //dd($data);
+
+        $qittaclient = new QittaGetAPI();
+        $qittaposts = $qittaclient->QittaGetAPI($search);
+        $qittaposts = $Pagenator->QittaPagenator($qittaposts);
+        //$qittaposts = $Pagenator->youtubePagenator()
+
+        // 使用者のユーザーID
+        if(auth()->check()) {
+            $userId = auth()->user()->id;
+        } else {
+            $userId = null;
+        }
+        
+        // ユーザーのいいね情報の取得
+        $likes = Like::Where('user_id',$userId)->pluck('url')->toArray();
+
         return view("posts/search")->with([
-            'questions' => $questions['questions'],
+            'questions' => $questions,
+            'datas' => $data,
+            'qittaposts' =>$qittaposts,
+            'user_id' => $userId,
+            'likes' => $likes,
             'search' => $search
         ]);
     }

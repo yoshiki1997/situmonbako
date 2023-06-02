@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Like extends Model
+class Problem_URL extends Model
 {
     use HasFactory;
 
+    protected $table = 'problems_url';
+
     protected $fillable = [
-        'user_id',
-        'title',
+        'problem_id',
         'url',
     ];
 }

@@ -3,6 +3,7 @@
     <x-slot name="header">
         <a href="/"><h1 class="text-2xl font-bold">{{ __('質問一覧') }}</h1></a>
     </x-slot>
+
     <div class="flex justify-center">
         <div class="w-8/12">
 
@@ -10,7 +11,7 @@
             <div class="searchbox mb-4">
                 <form action="/search" method="GET">
                     @csrf
-                    <input type="text" name="keyword" placeholder="キーワードを入れてください" class="p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 dark:text-black" />
+                    <input type="text" name="keyword" placeholder="キーワードを入れてください" class="p-2 pb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" />
                     <br/>
                     <input type="text" name="tags" placeholder="タグを入れてください" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" />
                     <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2">検索</button>
@@ -34,9 +35,22 @@
                 </form>
             </div>
 
+          
 
-            <div class="container">
+
+          <div class="card-body">
+          @if(isset($questions))
+          @foreach($questions as $question)
+                <p><a href="/questions/{{$question['id']}}">{{ $question['title'] }}</a></p>
+            @endforeach
+          @else
+          <p>該当する質問がありません。</p>
+          @endif
+          </div>
+    
+          <div class="container">
               <div class="card-body mx-4">
+                @if(isset($questions))
                   <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       @foreach($questions ?? [] as $question)
                         <form action="{{ route('storeHistory') }}" method="POST">
@@ -78,6 +92,9 @@
                         
                       @endforeach
                   </ul>
+                  @else
+                  <p>該当する質問がありません。</p>
+                  @endif
               </div>
             </div>
 
@@ -95,6 +112,7 @@
 
             <div class="container">
                 <div class="card-body mx-4">
+                  @if(isset($datas))
                     <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($datas ?? [] as $data)
                             <form action="{{ route('storeHistory') }}" method="POST">
@@ -139,6 +157,9 @@
                             </form>
                       @endforeach
                   </ul>
+                  @else
+                  <p>該当する質問がありません。</p>
+                  @endif
               </div>
             </div>
 
@@ -156,6 +177,7 @@
 
             <div class="container">
               <div class="card-body mx-4">
+                @if(isset($qittaposts))
                   <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       @foreach($qittaposts ?? [] as $qittapost)
                         <form action="{{ route('storeHistory') }}" method="POST">
@@ -192,6 +214,9 @@
                         </form>
                       @endforeach
                   </ul>
+                  @else
+                  <p>該当する質問がありません。</p>
+                  @endif
               </div>
             </div>
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LikeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,12 @@ Route::post('/store',[DashboardController::class, 'store'])->name('storeHistory'
 Route::get('/post', [PostController::class, 'index'] 
 )->middleware(['auth', 'verified'])->name('post');
 
-Route::post('/likes', [LikesController::class, 'store'])->name('likes.store');
+Route::post('/likes', [LikeController::class, 'store']);
+Route::post('/searchhistory', [SearchHistoryController::class, 'store'])->name('search.history');
+Route::get('/search', [PostController::class, 'search'])->name('search');
+Route::post('/problemstore', [DashboardController::class, 'problemstore'])->name('problem.store');
+Route::post('/problemurlstore', [DashboardController::class, 'problemurlstore'])->name('problem.url.store');
+Route::post('/destroy/{id}', [DashboardController::class, 'destroy'])->name('destroy.problem');
+Route::post('/update/{id}', [DashboardController::class, 'update'])->name('updateproblem');
 
 require __DIR__.'/auth.php';

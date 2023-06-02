@@ -58,4 +58,20 @@ class Pagenator {
 
         return $qittaposts ;
     }
+
+    public function RankingsPagenator($rankings){
+    
+        $currentPage = request()->get('page', 1);
+                $perPage = 9;
+                $offset = ($currentPage - 1) * $perPage;
+                $videos = new LengthAwarePaginator(
+                    array_slice($rankings, $offset, $perPage),
+                    count($rankings),
+                    $perPage,
+                    $currentPage,
+                    ['path' => request()->url(), 'query' => request()->query()]
+                    );
+
+        return $rankings ;
+    }
 }
