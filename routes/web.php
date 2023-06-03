@@ -42,5 +42,8 @@ Route::post('/problemstore', [DashboardController::class, 'problemstore'])->name
 Route::post('/problemurlstore', [DashboardController::class, 'problemurlstore'])->name('problem.url.store');
 Route::post('/destroy/{id}', [DashboardController::class, 'destroy'])->name('destroy.problem');
 Route::post('/update/{id}', [DashboardController::class, 'update'])->name('updateproblem');
+Route::post('/update/{id}/description', [DashboardController::class, 'descriptionupdate'])->name('description_update');
+Route::post('/update/{id}/comment', [DashboardController::class, 'inputHistoryComment'])->name('history.comment.input');
+
 
 require __DIR__.'/auth.php';

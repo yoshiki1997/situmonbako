@@ -30,6 +30,15 @@ class Problem extends Model
 
         return $result;
     }
+    
+    public function updatedescription($request, $problem)
+    {
+        $result = $problem->fill([
+            'description' => $request->description,
+        ])->save();
+
+        return $result;
+    }
 
     /**
      * 削除

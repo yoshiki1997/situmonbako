@@ -30,7 +30,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user_id = auth()->user()->id;
-        $historys = History::select('url', 'title')->where('user_id', $user_id)->get();
+        $historys = History::select('id', 'url', 'title', 'comment')->where('user_id', $user_id)->get();
         $likes = Like::select('url','title')->where('user_id',$user_id)->get();
         $problems = Problem::where('user_id',$user_id)->get();
         $problem_urls = [];
@@ -39,6 +39,7 @@ class DashboardController extends Controller
             $problem_urls[$problem->id] = Problem_URL::where('problem_id', $problem->id)->get();
         }
         //$problem_urls = Problem_URL::where('problem_id', $problems->id)->get();
+
         
         return view('dashboard')->with(['historys' => $historys,'likes' => $likes,'problems' => $problems,'problem_urls' => $problem_urls]);
     }
@@ -176,6 +177,36 @@ class DashboardController extends Controller
     {
         $problem = Problem::find($id);
         $update_problem = $this->problem->updateProblem($request, $problem);
+
+        return redirect()->route('dashboard');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function descriptionupdate(Request $request, $id)
+    {
+        $problem = Problem::find($id);
+        $update_problem = $this->problem->updatedescription($request, $problem);
+
+        return redirect()->route('dashboard');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function inputHistoryComment(Request $request, $id)
+    {
+        $history = History::find($id);
+        $history_comment = $this->history->updateComment($request, $history);
 
         return redirect()->route('dashboard');
     }

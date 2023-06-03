@@ -51,8 +51,7 @@
             </div>
         </div>
     </div>
-    
-    <div class="pt-4">
+        <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
@@ -67,19 +66,10 @@
                                 $id = $key + 1;
                                 @endphp
                                     <li class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between">
-                                    <form id="storeform{{ $problem->id }}" class="w-full flex flex-row items-center justify-between" action="{{ route('updateproblem', ['id', $problem->id]) }}" method="POST">
+                                    <form id="storeform{{ $problem->id }}" class="w-full flex flex-row items-center justify-between" action="{{ route('updateproblem', ['id' => $problem->id]) }}" method="POST">
                                         @csrf
                                             <input type="text" name="title" id="title" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1" value="{{ $problem->title }}" />
-                                            <p class="text-black dark:text-white hover:underline mr-4 font-bold">{{ $problem->title }}</p>
-                                            {{-- @if($problem->priority == 0)
-                                            <p class="text-green-500 bg-green-100 px-2 py-1 rounded-md mr-4">済</p>
-                                            @elseif($problem->priority == 1)
-                                            <p class="text-green-500 bg-green-100 px-2 py-1 rounded-md mr-4">低</p>
-                                            @elseif($problem->priority == 2)
-                                            <p class="text-yellow-500 bg-yellow-100 px-2 py-1 rounded-md mr-4">中</p>
-                                            @elseif($problem->priority == 3)
-                                            <p class="text-red-500 bg-red-100 px-2 py-1 rounded-md mr-4">高</p>
-                                            @endif --}}
+                                        
                                             <select name="priority" class="text-black rounded-md">
                                                 <option value="3" {{ $problem->priority == 0 ? 'selected' : '' }}>高</option>
                                                 <option value="2" {{ $problem->priority == 1 ? 'selected' : '' }}>中</option>
@@ -87,12 +77,13 @@
                                                 <option value="0" {{ $problem->priority == 3 ? 'selected' : '' }}>済</option>
                                             </select>
 
-                                            <p class="text-black dark:text-white hover:underline mr-4">{{ $problem->category }}</p>
-                                            <p class="text-black dark:text-white hover:underline mr-4">{{ $problem->status }}</p>
+                                            <input type="text" name="category" id="category" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1" value="{{ $problem->category }}" />
+
                                             <p class="text-black dark:text-white hover:underline mr-4">{{ $problem->updated_at }}</p>
                                             <div class="flex justify-end">
                                     </form>
-                                                <ul class="flex flex-row">
+                                    
+                                                <ul class="flex flex-row py-4">
                                                     <li class="mr-4">
                                                         <button type="button" class="bg-purple-500 hover:bg-purple-700 dark:text-white font-bold py-2 px-4 rounded" onclick="openDescription({{ $id }})">
                                                             詳細
@@ -104,7 +95,7 @@
                                                         </button>
                                                     </li>
                                                     <li class="mr-4">
-                                                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="store({{ $problem->id }})">
+                                                        <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="store({{ $problem->id }})">
                                                             保存
                                                         </button>
                                                     </li>
@@ -121,11 +112,13 @@
                                     </li>
                                     <li id="description_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
                                         @if(isset($problem->description))
+                                            <form action="{{ route('description_update', ['id' => $problem->id]) }}" method="POST">
+                                                @csrf
                                                 <label for="problem_description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
-                                                <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"><a href="#">保存</a></button>
+                                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">保存</button>
                                                 <textarea name="description" id="description" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $problem->description }}</textarea><br>
+                                            </form>
                                         @endif
-                                        
                                     </li>
                                     <li id="url_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
                                         <p class="text-black dark:text-white hover:underline mr-4 font-bold">
@@ -220,14 +213,30 @@
                     <div class="mb-4 accordion-toggle" onclick="toggleAccordion(this)">
                         <h2 class="text-lg font-bold">閲覧履歴</h2>
                     </div>
-                    <div class="accordion-content">
+                    <div id="historyaccordion" class="accordion-content">
                     @if(isset($historys))
                         <ul>
-                            @foreach($historys as $history)
-                                <li class="mb-2 ml-4">
-                                    <a href="{{ $history->url }}" target="_blank">
-                                        <p class="text-blue-500 hover:underline">{{ $history->title }}</p>
-                                    </a>
+                            @foreach($historys as $key => $history)
+                            @php
+                            $id = $key + 1;
+                            @endphp
+                                <li class="mb-2 ml-4 flex flex-row justify-between">
+                                        <p class="text-blue-500 hover:underline">
+                                            <a href="{{ $history->url }}" target="_blank">{{ $history->title }}</a>
+                                        </p>
+                                    <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " onclick="Comment({{$id}})">コメント</button>
+                                </li>
+                                @if(isset($history->comment))
+                                <li id="history_de" class="mb-2 ml-8">
+                                    <p class="text-black dark:text-white hover:underline">{{ $history->comment }}</p>
+                                </li>
+                                @endif
+                                <li id="history_de_fo_{{$id}}" class="mb-2 ml-8 flex justify-between hidden">
+                                    <form action="{{ route('history.comment.input', ['id' => $history->id]) }}" method="POST">
+                                        @csrf
+                                        <textarea name="comment" id="comment" cols="70" rows="1" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $history->comment }}</textarea><br>
+                                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">保存</button>
+                                    </form>
                                 </li>
                             @endforeach
                         </ul>
@@ -295,6 +304,13 @@
             accordionDiscription.classList.toggle("hidden");
             // アコーディオンを開きな
             problemaccordion.style.maxHeight = problemaccordion.scrollHeight + "px";
+        }
+        function Comment(id) {
+            const HistoryComment = document.getElementById("history_de_fo_" + id);
+            const HistoryAccordion = document.getElementById("historyaccordion");
+
+            HistoryComment.classList.toggle("hidden");
+            HistoryAccordion.style.maxHeight = HistoryAccordion.scrollHeight + 'px';
         }
 </script>
 
