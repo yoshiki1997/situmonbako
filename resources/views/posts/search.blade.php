@@ -98,6 +98,7 @@
               </div>
             </div>
 
+            @if(isset($question))
             <div class="mt-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
@@ -105,6 +106,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
 
 
@@ -158,11 +160,12 @@
                       @endforeach
                   </ul>
                   @else
-                  <p>該当する質問がありません。</p>
+                  <p>Youtubeに該当する質問がありません。</p>
                   @endif
               </div>
             </div>
 
+            @if(isset($datas))
             <div class="mt-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
@@ -170,7 +173,7 @@
                     </div>
                 </div>
             </div>
-
+            @endif
 
 
 
@@ -215,19 +218,20 @@
                       @endforeach
                   </ul>
                   @else
-                  <p>該当する質問がありません。</p>
+                  <p>qittaには該当する投稿がありません。</p>
                   @endif
               </div>
             </div>
 
+            @if(isset($qittaposts))
             <div class="mt-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $qittaposts->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>
-
+            @endif
 
             <div class="container">
               <div class="card-body mx-4">
@@ -268,13 +272,15 @@
               </div>
             </div>
 
+            @if(isset($rankings))
             <div class="mt-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $rankings->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

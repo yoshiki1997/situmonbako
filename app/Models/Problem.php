@@ -25,7 +25,7 @@ class Problem extends Model
         $result = $problem->fill([
             'title' => $request->title,
             'priority' => $request->priority,
-            'description' => $request->description
+            'category' => $request->category,
         ])->save();
 
         return $result;

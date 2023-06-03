@@ -48,7 +48,7 @@ class Pagenator {
         $currentPage = request()->get('page', 1);
                 $perPage = 9;
                 $offset = ($currentPage - 1) * $perPage;
-                $videos = new LengthAwarePaginator(
+                $qittaposts = new LengthAwarePaginator(
                     array_slice($qittaposts, $offset, $perPage),
                     count($qittaposts),
                     $perPage,

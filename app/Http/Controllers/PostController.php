@@ -170,6 +170,11 @@ class PostController extends Controller{
 
         $url = "https://teratail.com/api/v1/tags/{$tag}/questions";
 
+        $Pagenator = new Pagenator();
+
+        if(isset($tag))
+        {
+    
         $response = $client->request(
             'GET',
             $url,
@@ -188,8 +193,11 @@ class PostController extends Controller{
 
         $questions = json_decode($response->getBody(),true);
 
-        $Pagenator = new Pagenator();
+        
         $questions = $Pagenator->Pagenator($questions);
+        } else {
+            $questions = null;
+        }
 
         $youtubeclient = new YoutubeGetAPI();
         $data = $youtubeclient->YoutubeGetAPI($search);

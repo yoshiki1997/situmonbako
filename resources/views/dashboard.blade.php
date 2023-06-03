@@ -94,7 +94,12 @@
                                     </form>
                                                 <ul class="flex flex-row">
                                                     <li class="mr-4">
-                                                        <button class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" onclick="URLget({{ $id }})">
+                                                        <button type="button" class="bg-purple-500 hover:bg-purple-700 dark:text-white font-bold py-2 px-4 rounded" onclick="openDescription({{ $id }})">
+                                                            詳細
+                                                        </button>
+                                                    </li>
+                                                    <li class="mr-4">
+                                                        <button type="button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" onclick="URLget({{ $id }})">
                                                             参考URL
                                                         </button>
                                                     </li>
@@ -113,6 +118,14 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                    </li>
+                                    <li id="description_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
+                                        @if(isset($problem->description))
+                                                <label for="problem_description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
+                                                <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"><a href="#">保存</a></button>
+                                                <textarea name="description" id="description" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $problem->description }}</textarea><br>
+                                        @endif
+                                        
                                     </li>
                                     <li id="url_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
                                         <p class="text-black dark:text-white hover:underline mr-4 font-bold">
@@ -167,7 +180,7 @@
                                 <div class="flex flex-col mb-4 mr-9">
                                     <label for="description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
                                     <div class="relative">
-                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="18" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea><br>
+                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea><br>
                                         <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
                                         </div>
                                     </div>
@@ -274,6 +287,14 @@
             const storeform = document.getElementById("storeform" + problem_id);
 
             storeform.submit();
+        }
+        function openDescription(id) {
+            const accordionDiscription = document.getElementById("description_" + id);
+            const problemaccordion = document.getElementById("problem-accordion");
+
+            accordionDiscription.classList.toggle("hidden");
+            // アコーディオンを開きな
+            problemaccordion.style.maxHeight = problemaccordion.scrollHeight + "px";
         }
 </script>
 
