@@ -20,6 +20,17 @@ class Problem extends Model
         'category',
     ];
 
+    public function problemUrl() {
+        return $this->Hasmany(Problem_URL::class, 'problem_id');
+    }
+
+    public function latestCreatedAtProblem()
+    {
+        $result = Problem::with('problemUrl')->latest()->paginate(10);
+
+        return $result;
+    }
+
     public function updateProblem($request, $problem)
     {
         $result = $problem->fill([

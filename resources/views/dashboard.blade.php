@@ -24,7 +24,6 @@
             </div>
         </div>
     </div>
-
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -122,9 +121,9 @@
                                     </li>
                                     <li id="url_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
                                         <p class="text-black dark:text-white hover:underline mr-4 font-bold">
-                                        @if(isset($problem_urls) && isset($problem->id) && isset($problem_urls[$problem->id]))
-                                            @foreach($problem_urls[$problem->id] as $problem_url)
-                                                <a href="{{ $problem_url->url }}" target="_blank" class="text-blue-500 hover:underline">{{ $problem_url->url }}</a><br>
+                                        @if(isset($problem->problemUrl))
+                                            @foreach($problem->problemUrl as $problemUrl)
+                                                <a href="{{ $problemUrl->url }}" target="_blank" class="text-blue-500 hover:underline">{{ $problemUrl->url }}</a><br>
                                             @endforeach
                                         @endif
                                         </p>

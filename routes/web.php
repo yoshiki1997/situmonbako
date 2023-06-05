@@ -4,6 +4,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\KnowlegeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,6 +45,8 @@ Route::post('/destroy/{id}', [DashboardController::class, 'destroy'])->name('des
 Route::post('/update/{id}', [DashboardController::class, 'update'])->name('updateproblem');
 Route::post('/update/{id}/description', [DashboardController::class, 'descriptionupdate'])->name('description_update');
 Route::post('/update/{id}/comment', [DashboardController::class, 'inputHistoryComment'])->name('history.comment.input');
+
+Route::get('/historia', [KnowlegeController::class, 'index'])->name('historia.index');
 
 
 require __DIR__.'/auth.php';

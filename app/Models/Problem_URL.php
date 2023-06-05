@@ -15,4 +15,8 @@ class Problem_URL extends Model
         'problem_id',
         'url',
     ];
+
+    public function problem() {
+        return $this->belongsTo(Probles::class, 'problem_id');
+    }
 }

@@ -26,8 +26,8 @@
 
                 <!-- Index Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('index')" :active="request()->routeIs('index')">
-                        {{ __('質問投稿') }}
+                    <x-nav-link :href="route('historia.index')" :active="request()->routeIs('historia.index')">
+                        {{ __('困ったことリスト') }}
                     </x-nav-link>
                 </div>
             </div>
