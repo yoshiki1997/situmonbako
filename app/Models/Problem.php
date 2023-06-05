@@ -20,6 +20,10 @@ class Problem extends Model
         'category',
     ];
 
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
     public function problemUrl() {
         return $this->Hasmany(Problem_URL::class, 'problem_id');
     }

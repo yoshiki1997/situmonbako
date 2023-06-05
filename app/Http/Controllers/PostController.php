@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Like;
+use App\Models\SearchHistory;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -18,6 +19,12 @@ require_once('Pagenator.php');
 
 
 class PostController extends Controller{
+
+    public function __construct()
+    {
+        $this->search_history = new SearchHistory();
+    }
+
     public function index(Tag $tags)
     {
         // クライアントインスタンス生成
@@ -160,6 +167,14 @@ class PostController extends Controller{
 
     public function search(Request $request)
     {
+        if(auth()->check())
+        {
+            $user_id = auth()->user()->id;
+        } else
+        {
+            $user_id = null;   
+        }
+        $searchhistory = $this->search_history->insertKeyword($request, $user_id);
         $search = $request->input("keyword");
 
         $tag = $request->input("tags");
@@ -219,13 +234,16 @@ class PostController extends Controller{
         // ユーザーのいいね情報の取得
         $likes = Like::Where('user_id',$userId)->pluck('url')->toArray();
 
+        $topKeywords = $this->search_history->getTopKeywords();
+
         return view("posts/search")->with([
             'questions' => $questions,
             'datas' => $data,
             'qittaposts' =>$qittaposts,
             'user_id' => $userId,
             'likes' => $likes,
-            'search' => $search
+            'search' => $search,
+            'topKeywords' => $topKeywords,
         ]);
     }
 

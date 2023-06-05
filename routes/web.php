@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\KnowlegeController;
+use App\Http\Controllers\UserPageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,8 +38,11 @@ Route::get('/post', [PostController::class, 'index']
 )->middleware(['auth', 'verified'])->name('post');
 
 Route::post('/likes', [LikeController::class, 'store']);
+
 Route::post('/searchhistory', [SearchHistoryController::class, 'store'])->name('search.history');
+
 Route::get('/search', [PostController::class, 'search'])->name('search');
+
 Route::post('/problemstore', [DashboardController::class, 'problemstore'])->name('problem.store');
 Route::post('/problemurlstore', [DashboardController::class, 'problemurlstore'])->name('problem.url.store');
 Route::post('/destroy/{id}', [DashboardController::class, 'destroy'])->name('destroy.problem');
@@ -47,6 +51,9 @@ Route::post('/update/{id}/description', [DashboardController::class, 'descriptio
 Route::post('/update/{id}/history/comment', [DashboardController::class, 'inputHistoryComment'])->name('history.comment.input');
 Route::post('/update/{id}/like/comment', [DashboardController::class, 'inputLikeComment'])->name('like.comment.input');
 
+Route::get('/user/{id}', [UserPageController::class, 'index'])->name('user.page');
+
+Route::post('/follow', [DashboardController:: class, 'addFollow'])->name('add.follow');
 
 Route::get('/historia', [KnowlegeController::class, 'index'])->name('historia.index');
 

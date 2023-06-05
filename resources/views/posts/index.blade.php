@@ -10,9 +10,9 @@
             <div class="searchbox mb-4">
                 <form action="/search" method="GET">
                     @csrf
-                    <input type="text" name="keyword" placeholder="キーワードを入れてください" class="p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 dark:text-black" />
+                    <input type="text" name="keyword" placeholder="キーワードを入れてください" class="p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-black" />
                     <br/>
-                    <input type="text" name="tags" placeholder="タグを入れてください" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" />
+                    <input type="text" name="tags" placeholder="タグを入れてください" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-black" />
                     <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2">検索</button>
                     <br/>
                     <div>

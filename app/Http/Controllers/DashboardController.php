@@ -221,6 +221,11 @@ class DashboardController extends Controller
         return redirect()->route('dashboard');
     }
 
+    public function addFollow()
+    {
+        
+    }
+
     /**
      * Remove the specified resource from storage.
      *
