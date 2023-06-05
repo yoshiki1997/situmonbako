@@ -37,6 +37,7 @@ class Problem extends Model
             'title' => $request->title,
             'priority' => $request->priority,
             'category' => $request->category,
+            'description' => $request->description,
         ])->save();
 
         return $result;
