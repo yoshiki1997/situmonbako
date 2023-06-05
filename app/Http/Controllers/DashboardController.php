@@ -31,7 +31,7 @@ class DashboardController extends Controller
     {
         $user_id = auth()->user()->id;
         $historys = History::select('id', 'url', 'title', 'comment')->where('user_id', $user_id)->get();
-        $likes = Like::select('url','title')->where('user_id',$user_id)->get();
+        $likes = Like::select('id', 'url', 'title', 'comment')->where('user_id',$user_id)->get();
         $problems = Problem::where('user_id',$user_id)->with('problemUrl')->get();
         //$problem_urls = Problem_URL::where('problem_id', $problems->id)->get();
 
@@ -202,6 +202,21 @@ class DashboardController extends Controller
     {
         $history = History::find($id);
         $history_comment = $this->history->updateComment($request, $history);
+
+        return redirect()->route('dashboard');
+    }
+    
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function inputLikeComment(Request $request, $id)
+    {
+        $like = Like::find($id);
+        $like_comment = $this->like->updateComment($request, $like);
 
         return redirect()->route('dashboard');
     }

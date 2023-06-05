@@ -13,5 +13,14 @@ class Like extends Model
         'user_id',
         'title',
         'url',
+        'comment',
     ];
+
+    public function updateComment($request, $like) {
+        $result = $like->fill([
+            'comment' => $request->like_comment,
+        ])->save();
+
+        return $result;
+    }
 }

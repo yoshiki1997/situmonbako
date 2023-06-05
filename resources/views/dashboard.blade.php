@@ -31,15 +31,33 @@
                     <div class="mb-4 accordion-toggle" onclick="toggleAccordion(this)">
                     役立ったYOした投稿
                     </div>
-                    <div class="accordion-content">
+                    <div id="like-accordion" class="accordion-content">
                     @if(isset($likes))
                         <ul>
-                            @foreach($likes as $like)
-                                <li class="mb-2 ml-4">
+                            @foreach($likes as $key => $like)
+                            @php
+                            $id = $key + 1;
+                            @endphp
+                                @if(isset($like->title))
+                                <li class="mb-2 ml-4 flex justify-between">
                                     <a href="{{ $like->url }}" target="_blank">
                                         <p class="text-blue-500 hover:underline">{{ $like->title }}</p>
                                     </a>
+                                    <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " onclick="likeComment({{$id}})">コメント</button>
                                 </li>
+                                @if(isset($like->comment))
+                                <li id="like_comment" class="mb-2 ml-8">
+                                    <p class="text-black dark:text-white hover:underline">{{ $like->comment }}</p>
+                                </li>
+                                @endif
+                                <li id="like_de_fo_{{$id}}" class="mb-2 ml-8 flex justify-between hidden">
+                                    <form class="flex" action="{{ route('like.comment.input', ['id' => $like->id]) }}" method="POST">
+                                        @csrf
+                                        <textarea name="like_comment" id="like_comment" cols="70" rows="1" class="text-black border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $like->comment }}</textarea><br>
+                                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-8">保存</button>
+                                    </form>
+                                </li>
+                                @endif
                             @endforeach
                         </ul>
                     @else
@@ -64,12 +82,9 @@
                                 @php
                                 $id = $key + 1;
                                 @endphp
-                                <form id="storeform{{ $problem->id }}" class="w-full flex flex-row items-center justify-between" action="{{ route('updateproblem', ['id' => $problem->id]) }}" method="POST">
-                                @csrf
-                                <div class="flex justify-between flex-warp w-full">
-                                    <div class="flex-auto">
-                                        <li class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between">
-                                            
+                                    <li class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between">
+                                    <form id="storeform{{ $problem->id }}" class="w-full flex flex-row items-center justify-between" action="{{ route('updateproblem', ['id' => $problem->id]) }}" method="POST">
+                                        @csrf
                                             <input type="text" name="title" id="title" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1" value="{{ $problem->title }}" />
                                         
                                             <select name="priority" class="text-black rounded-md">
@@ -82,78 +97,77 @@
                                             <input type="text" name="category" id="category" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1" value="{{ $problem->category }}" />
 
                                             <p class="text-black dark:text-white hover:underline mr-4">{{ $problem->updated_at }}</p>
-                                            
-                                        </li>
-
-                                        <li id="description_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
-                                            <label for="problem_description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
-                                            <textarea name="description" id="description" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $problem->description }}</textarea><br>
-                                        </li>
-                                        
-                                        </form>
-
-                                        <li id="url_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
-                                            <p class="text-black dark:text-white hover:underline mr-4 font-bold">
-                                            @if(isset($problem->problemUrl))
-                                                @foreach($problem->problemUrl as $problemUrl)
-                                                    <a href="{{ $problemUrl->url }}" target="_blank" class="text-blue-500 hover:underline">{{ $problemUrl->url }}</a><br>
-                                                @endforeach
-                                            @endif
-                                            </p>
-                                        </li>
-
-                                        <li id="urlform_{{ $id }}" class="hidden">
-                                            <div class="relative">
-                                                <div class="flex flex-col mb-4 mr-9 ">
-                                                    <form action="{{ Route('problem.url.store') }}" method="POST">
-                                                    @csrf
-                                                        <label for="problem_url" class="mb-2 text-gray-700 dark:text-white">参考ULR:</label>
-                                                        <div class="flex flex-row">
-                                                        <input class="hidden" name="problem_id" value="{{ $problem->id }}">
-                                                        <input type="text" id="problem_url" name="problem_url" placeholder="解決に役立ったURLをコピペして下さい。" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"><br>
-                                                        <button type="submit" id="storeButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded ml-8">
-                                                            追加
+                                            <div class="flex justify-end">
+                                    </form>
+                                    
+                                                <ul class="flex flex-row py-4">
+                                                    <li class="mr-4">
+                                                        <button type="button" class="bg-purple-500 hover:bg-purple-700 dark:text-white font-bold py-2 px-4 rounded" onclick="openDescription({{ $id }})">
+                                                            詳細
                                                         </button>
-                                                        </div>
-                                                    </form>
-                                                    <div class="absolute inset-y-0 right-0 flex items-center px-4 ">
-
+                                                    </li>
+                                                    <li class="mr-4">
+                                                        <button type="button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" onclick="URLget({{ $id }})">
+                                                            参考URL
+                                                        </button>
+                                                    </li>
+                                                    <li class="mr-4">
+                                                        <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="store({{ $problem->id }})">
+                                                            保存
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <form action="{{ route('destroy.problem',['id' => $problem->id]) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                                削除
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                    </li>
+                                    <li id="description_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
+                                        @if(isset($problem->description))
+                                            <form action="{{ route('description_update', ['id' => $problem->id]) }}" method="POST">
+                                                @csrf
+                                                <label for="problem_description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
+                                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">保存</button>
+                                                <textarea name="description" id="description" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $problem->description }}</textarea><br>
+                                            </form>
+                                        @endif
+                                    </li>
+                                    <li id="url_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
+                                        <p class="text-black dark:text-white hover:underline mr-4 font-bold">
+                                        @if(isset($problem->problemUrl))
+                                            @foreach($problem->problemUrl as $problemUrl)
+                                                <a href="{{ $problemUrl->url }}" target="_blank" class="text-blue-500 hover:underline">{{ $problemUrl->url }}</a><br>
+                                            @endforeach
+                                        @endif
+                                        </p>
+                                    </li>
+                                    <li id="urlform_{{ $id }}" class="hidden">
+                                        <div class="relative">
+                                            <div class="flex flex-col mb-4 mr-9 ">
+                                                <form action="{{ Route('problem.url.store') }}" method="POST">
+                                                @csrf
+                                                    <label for="problem_url" class="mb-2 text-gray-700 dark:text-white">参考ULR:</label>
+                                                    <div class="flex flex-row">
+                                                    <input class="hidden" name="problem_id" value="{{ $problem->id }}">
+                                                    <input type="text" id="problem_url" name="problem_url" placeholder="解決に役立ったURLをコピペして下さい。" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"><br>
+                                                    <button type="submit" id="storeButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded ml-8">
+                                                        追加
+                                                    </button>
                                                     </div>
+                                                </form>
+                                                <div class="absolute inset-y-0 right-0 flex items-center px-4 ">
+
                                                 </div>
                                             </div>
-                                        </li>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <ul class="flex flex-row py-4">
-                                            <li class="mr-4">
-                                                <button type="button" class="bg-purple-500 hover:bg-purple-700 dark:text-white font-bold py-2 px-4 rounded" onclick="openDescription({{ $id }})">
-                                                    詳細
-                                                </button>
-                                            </li>
-                                            <li class="mr-4">
-                                                <button type="button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" onclick="URLget({{ $id }})">
-                                                    参考URL
-                                                </button>
-                                            </li>
-                                            <li class="mr-4">
-                                                <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="store({{ $problem->id }})">
-                                                    保存
-                                                </button>
-                                            </li>
-                                            <li>
-                                                <form action="{{ route('destroy.problem',['id' => $problem->id]) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                        削除
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>      
-                                </div>
+                                        </div>
+                                    </li>
                                 @endforeach
                             </ul>
-                            
                         @else
                             <p>困ったことリストはまだありません。</p>
                         @endif
@@ -314,6 +328,13 @@
 
             HistoryComment.classList.toggle("hidden");
             HistoryAccordion.style.maxHeight = HistoryAccordion.scrollHeight + 'px';
+        }
+        function likeComment(id) {
+            const LikeComment = document.getElementById("like_de_fo_" + id);
+            const LikeAccordion = document.getElementById("like-accordion");
+
+            LikeComment.classList.toggle("hidden");
+            LikeAccordion.style.maxHeight = LikeAccordion.scrollHeight + 'px';
         }
 </script>
 
