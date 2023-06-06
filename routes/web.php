@@ -53,9 +53,10 @@ Route::post('/update/{id}/like/comment', [DashboardController::class, 'inputLike
 
 Route::get('/user/{id}', [UserPageController::class, 'index'])->name('user.page');
 
-Route::post('/follow', [DashboardController:: class, 'addFollow'])->name('add.follow');
+Route::post('/follow/{user}', [DashboardController:: class, 'Follow'])->name('follow');
 
 Route::get('/historia', [KnowlegeController::class, 'index'])->name('historia.index');
+
 
 
 require __DIR__.'/auth.php';

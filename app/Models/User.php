@@ -49,4 +49,35 @@ class User extends Authenticatable
     public function searchHistory() {
         return $this->hasMany(SearchHistory::class);
     }
+
+    public function following() {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');
+    }
+
+    public function followers() {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id');
+    }
+
+    public function follow(User $user) {
+        
+        $result;
+
+        if(auth()->check()){
+            
+            $isFollowing = auth()->user()->following()->where('following_id', $user->id)->exists();
+
+            if ($isFollowing) {
+                // フォロー関係の解除
+                $result = auth()->user()->following()->detach($user);
+                // フォロー解除後のリダイレクトやレスポンスなどの処理
+                return $result;
+            } else {
+                // フォロー関係の作成
+                $result = auth()->user()->following()->attach($user);
+                // フォロー後のリダイレクトやレスポンスなどの処理
+                return $result;
+            }
+        }
+        return $result;
+    }
 }

@@ -32,6 +32,16 @@
                 </div>
             </div>
 
+            @if(isset($uesr->icon))
+            <div class="rounded-full h-8 w-8 overflow-hidden object-cover">
+                <img src="{{ $user->icon }}" alt="myicon" />
+            </div>
+            @else
+            <div class="rounded-full h-8 w-8 overflow-hidden object-cover">
+                <img src="{{ asset('images/noimage.jpg') }}" alt="myicon" />
+            </div>
+            @endif
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">

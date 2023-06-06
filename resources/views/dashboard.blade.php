@@ -5,22 +5,22 @@
         </h2>
     </x-slot>
 
-    <div id="profile" class="w-64 h-64 bg-gyra-700 border border-black rounded-full flex flex-col justify-center items-center m-auto">
-        <div id="user_image">
-            <img src="#" alt="User Icon">
+    <div id="profile" class="w-64 h-64 bg-gyra-700 border border-black rounded-md flex flex-col justify-center items-center m-auto">
+        <div id="user_image" class="rounded-full h-32 w-32 overflow-hidden">
+            @if(isset($user->icon))
+            <img src="{{ asset('$user->icon') }}" alt="User Icon" class="w-full h-full object-cover">
+            @else
+            <img src="{{ asset('images/noimage.jpg') }}" alt="User Icon" class="w-full h-full object-cover">
+            @endif
         </div>
         <div id="user_info" class="flex justify-evenly w-full h-20 items-end">
-            <div id="user_name">
-                <p>{{ Auth::user()->name }}</p>
-            </div>
-            <div id="user_id">
-                <p>{{ Auth::user()->id }}</p>
-            </div>
-            <div id="followButton">
-                <form action="{{ route('add.follow', ['id' => Auth::user()->id]) }}" method="POST">
-                @csrf
-                    <button type="submit" name="follow" class="bg-blue-300 text-white rounded" >フォロー</button>
-                </form>
+            <div class="flex flex-col">
+                <div id="user_name">
+                    <p class="text-center font-semibold">Name:{{ Auth::user()->name }}</p>
+                </div>
+                <div id="user_id" class="mr-auto">
+                    <p class="text-center">ID:{{ Auth::user()->id }}</p>
+                </div>
             </div>
         </div>
     </div>

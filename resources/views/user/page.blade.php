@@ -5,6 +5,34 @@
         </h2>
     </x-slot>
 
+    <div id="profile" class="w-64 h-64 bg-gyra-700 border border-black rounded-md flex flex-col justify-center items-center m-auto">
+        <div id="user_image" class="rounded-full h-32 w-32 overflow-hidden">
+            <img src="{{ asset('images/noimage.jpg') }}" alt="User Icon" class="w-full h-full object-cover">
+        </div>
+        <div id="user_info" class="flex justify-evenly w-full h-20 items-end">
+            <div class="flex flex-col">
+                <div id="user_name">
+                    <p class="text-center font-semibold">Name:{{ $user->name }}</p>
+                </div>
+                <div id="user_id" class="mr-auto">
+                    <p class="text-center">ID:{{ $user->id }}</p>
+                </div>
+            </div>
+            <div id="followButton">
+                <form action="{{ route('follow', ['user' => $user]) }}" method="POST">
+                @csrf
+                    <button type="submit" name="follow" class="bg-blue-300 text-white rounded py-2 px-4" >
+                    @if($user->isFollowed)
+                        フォロー済み
+                    @else
+                        フォロー
+                    @endif
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">

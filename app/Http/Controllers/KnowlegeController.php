@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Problem;
 use App\Models\Problem_URL;
+use App\Models\User;
 
 class KnowlegeController extends Controller
 {
@@ -12,6 +13,7 @@ class KnowlegeController extends Controller
     {
         $this->problem = new Problem();
         $this->problem_url = new Problem_URL(); 
+        $this->user = new USER();
     }
 
     public function index(Problem $problem)

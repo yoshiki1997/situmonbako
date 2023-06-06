@@ -9,6 +9,7 @@ use App\Models\Tips;
 use App\Models\History;
 use App\Models\Problem;
 use App\Models\Problem_URL;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -20,6 +21,7 @@ class DashboardController extends Controller
         $this->history = new History();
         $this->Tips = new Tips();
         $this->like = new Like();
+        $this->user = new User();
     }
 
     /**
@@ -139,6 +141,7 @@ class DashboardController extends Controller
         return redirect()->back();
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -221,9 +224,11 @@ class DashboardController extends Controller
         return redirect()->route('dashboard');
     }
 
-    public function addFollow()
-    {
+    public function follow(User $user) {
         
+        $follow = $this->user->follow($user);
+        
+        return redirect()->back();
     }
 
     /**
