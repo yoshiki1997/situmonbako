@@ -35,15 +35,7 @@
         </div>
     </div>
 
-    <div class="pt-4">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    閲覧履歴
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -290,7 +282,25 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    フォロワーリスト
+                    <div class="mb-4 accordion-toggle" onclick="toggleAccordion(this)">
+                    フォローリスト
+                    </div>
+                    <div id="follow-accordion" class="accordion-content">
+                        <ul>
+                            @if(isset(auth()->user()->following))
+                            @foreach(auth()->user()->following as $followingUser)
+                                <li class="mb-2 ml-4 flex justify-between">
+                                    <a href="{{ route('user.page', ['id' => $followingUser->id]) }}" target="_blank">
+                                        <p class="text-blue-500 hover:underline  text-2xl">{{ $followingUser->name }}</p>
+                                    </a>
+                                    <form action="{{ route('delete', ['user' => $followingUser]) }}" method="POST">
+                                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " >フォロー解除</button>
+                                    </form>
+                                </li>
+                            @endforeach
+                            @endif
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

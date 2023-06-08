@@ -28,6 +28,7 @@ class KnowlegeController extends Controller
         return view('posts.historia')->with([
             'problems' => $problems,
             'problem_urls' => $problem_urls,
+            'problemLikes' => $problemLiks,
         ]);
     }
 }

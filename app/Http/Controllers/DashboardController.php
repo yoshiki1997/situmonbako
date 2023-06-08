@@ -37,7 +37,6 @@ class DashboardController extends Controller
         $problems = Problem::where('user_id',$user_id)->with('problemUrl')->get();
         //$problem_urls = Problem_URL::where('problem_id', $problems->id)->get();
 
-        
         return view('dashboard')->with(['historys' => $historys,'likes' => $likes,'problems' => $problems,]);
     }
 
@@ -91,37 +90,46 @@ class DashboardController extends Controller
      */
     public function problemstore(Request $request)
     {
-        // URLとタイトルの取得
-        $url = $request->input('problem_url'); 
-        $title = $request->input('title');
-        $user_id = auth()->user()->id;
-        $status = $request->input('status');
-        $description = $request->input('description');
-        $priority = $request->input('priority');
-        $categroy = $request->input('category');
+        DB::beginTransaction();
 
-        // URLを保存する処理
-        $problem = new Problem();
-        $problem->title = $title;
-        $problem->user_id = $user_id;
-        $problem->status = $status;
-        $problem->description = $description;
-        $problem->priority = $priority;
-        $problem->category = $categroy;
-        $problem->save();
+        try{
+            // URLとタイトルの取得
+            $url = $request->input('problem_url'); 
+            $title = $request->input('title');
+            $user_id = auth()->user()->id;
+            $status = $request->input('status');
+            $description = $request->input('description');
+            $priority = $request->input('priority');
+            $categroy = $request->input('category');
 
-        $newProblemId = $problem->id;
+            // URLを保存する処理
+            $problem = new Problem();
+            $problem->title = $title;
+            $problem->user_id = $user_id;
+            $problem->status = $status;
+            $problem->description = $description;
+            $problem->priority = $priority;
+            $problem->category = $categroy;
+            $problem->save();
 
-        $problem_url = new Problem_URL();
-        if(isset($url))
-        {
-            $problem_url->problem_id = $newProblemId;
-            $problem_url->url = $url;
-            $problem_url->save();
+            $newProblemId = $problem->id;
+
+            $problem_url = new Problem_URL();
+            if(isset($url))
+            {
+                $problem_url->problem_id = $newProblemId;
+                $problem_url->url = $url;
+                $problem_url->save();
+            }
+
+            DB::commit();
+
+            // 適切なリダイレクト先にリダイレクトする
+            return redirect()->back();
+
+        } catch (/Expection $e) {
+            DB::rollback();
         }
-
-        // 適切なリダイレクト先にリダイレクトする
-        return redirect()->back();
     }
 
     /**
@@ -231,6 +239,12 @@ class DashboardController extends Controller
         return redirect()->back();
     }
 
+    public function deleteFollow(User $user) {
+
+        $follow = $this->user->deleteFollow($user);
+
+        return redirect()->back();
+    }
     /**
      * Remove the specified resource from storage.
      *

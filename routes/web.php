@@ -57,6 +57,6 @@ Route::post('/follow/{user}', [DashboardController:: class, 'Follow'])->name('fo
 
 Route::get('/historia', [KnowlegeController::class, 'index'])->name('historia.index');
 
-
+Route::post('/follow/{user}/delete', [DashboardController:: class, 'deleteFollow'])->name('delete');
 
 require __DIR__.'/auth.php';
