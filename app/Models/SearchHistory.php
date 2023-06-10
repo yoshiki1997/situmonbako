@@ -43,7 +43,7 @@ class SearchHistory extends Model
         }
     }
 
-    public function getTopKeyword() {
+    public function getTopKeywords() {
         return SearchHistory::orderBy('count', 'desc')->take(5)->pluck('keyword');
     }
 }

@@ -165,8 +165,7 @@ class PostController extends Controller{
             ]);
         }
 
-    public function search(Request $request)
-    {
+    public function search(Request $request)    {
         if(auth()->check())
         {
             $user_id = auth()->user()->id;

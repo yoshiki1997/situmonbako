@@ -50,6 +50,14 @@ class User extends Authenticatable
         return $this->hasMany(SearchHistory::class);
     }
 
+    public function reply() {
+        return $this->hasMany(ProblemReply::class);
+    }
+
+    public function userProblemLikes() {
+        return $this->belongsToMany(Problem::class, 'problem_likes', 'user_id', 'problem_id')->withTimestamps();
+    }
+
     public function following() {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')->withTimestamps();
     }
@@ -71,6 +79,7 @@ class User extends Authenticatable
                 $result = auth()->user()->following()->detach($user);
                 // フォロー解除後のリダイレクトやレスポンスなどの処理
                 return $result;
+
             } else {
                 // フォロー関係の作成
                 $result = auth()->user()->following()->attach($user);
@@ -79,6 +88,28 @@ class User extends Authenticatable
             }
         }
         return $result;
+    }
+
+    public function problemLike(Problem $problem) {
+        $result;
+
+        if(auth()->check()) {
+
+            $isLiking = auth()->user()->userProblemLikes()->where('problem_id', $problem->id)->exists();
+
+            if($isLiking) {
+                $result = auth()->user()->userProblemLikes()->detach($problem);
+
+                return $result;
+            } else {
+                $result = auth()->user()->userProblemLikes()->attach($problem);
+
+                return $result;
+            }
+
+            return $result;
+
+        }
     }
 
     public function deleteFollow(User $user) {

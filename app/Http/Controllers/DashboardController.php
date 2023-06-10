@@ -127,7 +127,7 @@ class DashboardController extends Controller
             // 適切なリダイレクト先にリダイレクトする
             return redirect()->back();
 
-        } catch (/Expection $e) {
+        } catch (\Expection $e) {
             DB::rollback();
         }
     }

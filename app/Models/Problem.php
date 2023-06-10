@@ -25,7 +25,15 @@ class Problem extends Model
     }
 
     public function problemUrl() {
-        return $this->Hasmany(Problem_URL::class, 'problem_id');
+        return $this->hasMany(Problem_URL::class, 'problem_id');
+    }
+
+    public function reply() {
+        return $this->hasMany(ProblemReply::class);
+    }
+
+    public function problemUserLikes() {
+        return $this->belongsToMany(User::class, 'problem_liks', 'problem_id', 'user_id')->withTimestamp();
     }
 
     public function latestCreatedAtProblem()

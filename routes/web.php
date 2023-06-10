@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\KnowlegeController;
 use App\Http\Controllers\UserPageController;
+use App\Http\Controllers\SuggestController;
+use App\Http\Controllers\ProblemReplyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -56,6 +58,12 @@ Route::get('/user/{id}', [UserPageController::class, 'index'])->name('user.page'
 Route::post('/follow/{user}', [DashboardController:: class, 'Follow'])->name('follow');
 
 Route::get('/historia', [KnowlegeController::class, 'index'])->name('historia.index');
+
+Route::get('/suggest', [SuggestController::class, 'suggest'])->name('suggest');
+
+Route::post('/problemlikes', [KnowlegeController::class, 'problemLikes'])->name('problem.likes');
+
+Route::post('/reply/{id}', [ProblemReplyController::class, 'Reply'])->name('reply');
 
 Route::post('/follow/{user}/delete', [DashboardController:: class, 'deleteFollow'])->name('delete');
 
