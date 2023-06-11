@@ -5,14 +5,18 @@
     </x-slot>
 
     <div class="flex justify-center">
-        <form class="w-full flex justify-center">
-        <input type="text" name="keyword" class="w-7/12" placeholder="キーワードを入力してください">
-        <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md ml-8">検索</button>
+        <form action="{{ route('history.search') }}" method="GET" class="w-full flex justify-center">
+        <input type="text" name="keyword" class="w-7/12 text-black" placeholder="キーワードを入力してください">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md ml-8">検索</button>
         </form>
     </div>
     <div class="flex justify-center items-start bg-gray-100 dark:bg-gray-700">
         <div class="max-w-xl w-full mx-auto px-4 py-8">
             <div id="problemtweets" class="space-y-4">
+
+            @error('keyword')
+            <div class="text-center">{{ $message }}</div>
+            @enderror
 
                 @if(isset($problems))
                 @foreach($problems as $key => $problem)
@@ -22,12 +26,16 @@
                 <div id="tweet" class="bg-white dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black shadow-md rounded-lg p-4 duration-300 ease-in-out">
                     <div class="flex flex-col justify-between">
                         <div class="flex flex-row justify-start ">
+                            @if(isset($problem->user->id))
                             <a href="{{ route('user.page', ['id' => $problem->user->id]) }}">
                             <img src="{{ $problem->user_id }}" class="w-10 h-10 rounded-full mr-4" alt="Profile Image">
                             <h2 class="font-bold text-lg px-8">{{ $problem->user->name }}</h2>
                             </a>
-                            <p class="text-gray-600 dark:text-black hover:text-white px-8 ml-auto">{{ $problem->created_at->diffForHumans() }}</p>
-                            <form action="#" method="POST">@csrf編集</form>
+                            @endif
+                            <p class="text-gray-600 dark:text-black px-8 ml-auto">{{ $problem->created_at->diffForHumans() }}</p>
+                            <a href="{{ route('history.pickup',['id' => $problem->id]) }}">
+                                <button type="button">編集</button>
+                            </a>
                         </div>
                         <div class="mx-8">
                             <p class="text-xl mt-2 mb-2">{{ $problem->title }}</p>
@@ -40,7 +48,10 @@
                         </div>
                         <div id="reply_{{$id}}" class="hidden mt-2">
                             @if($problem->reply)
-                            @foreach($problem->reply as $reply )
+                            @foreach($problem->reply as $key2 => $reply )
+                            @php
+                                $id2 = $key2 + 1;
+                            @endphp
                             <div class="m-8 border rounded">
                                 <div class="m-2">
                                 <div class="flex justify-between">
@@ -48,9 +59,24 @@
                                 </div>
                                 <p>{{ $reply->body }}</p>
                                
-                                @if($reply->updated_at)
-                                    <p>編集済み</p>
-                                @endif
+                                <div class="flex justify-between">
+                                <form action="{{ route('destory.reply', ['id' => $reply->id]) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit">削除</button>
+                                </form>
+                                <button type="button" onclick="openPatchReply({{$id2}})">編集</button>
+                                </div>
+
+                                <div id="replypatch_{{$id2}}" class="hidden">
+                                    <form action="{{ route('update.reply', ['id' => $reply->id]) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <textarea name="body" id="body" cols="20" rows="1" class="text-black border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-16"></textarea>
+                                        <button type="submit">変更</button>
+                                    </form>
+                                </div>
+
                                 </div>
                             </div>
                             <div class="flex justify-center">
@@ -91,11 +117,13 @@
                 </div>
                 @endforeach
                 @endif
+                @if(isset($problems))
                 <div class="flex justify-center">
                     <nav class="pagination flex">
                         {{ $problems->links('pagination::tailwind') }}
                     </nav>
                 </div>
+                @endif
             </div>
         </div>
         <div class="w-64">
@@ -145,4 +173,18 @@
         Reply.classList.toggle('hidden');
     }
 
+    function openPatchReply(id2){
+        const ReplyPatch = document.getElementById('replypatch_'+ id2);
+        ReplyPatch.classList.toggle('hidden');
+    }
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js">
+//jQuery
+$(function(){
+  // 送信ボタンが1度クリックされたら、送信ボタンを非活性化する（二重submit対策）
+  $('form').submit(function() {
+    $("button[type='submit']").prop("disabled", true);
+  });
+});
 </script>

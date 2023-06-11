@@ -10,6 +10,8 @@ use App\Models\History;
 use App\Models\Problem;
 use App\Models\Problem_URL;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 
 class DashboardController extends Controller
 {
@@ -34,7 +36,7 @@ class DashboardController extends Controller
         $user_id = auth()->user()->id;
         $historys = History::select('id', 'url', 'title', 'comment')->where('user_id', $user_id)->get();
         $likes = Like::select('id', 'url', 'title', 'comment')->where('user_id',$user_id)->get();
-        $problems = Problem::where('user_id',$user_id)->with('problemUrl')->get();
+        $problems = Problem::where('user_id',$user_id)->with('problemUrl')->orderBy('priority', 'desc')->get();
         //$problem_urls = Problem_URL::where('problem_id', $problems->id)->get();
 
         return view('dashboard')->with(['historys' => $historys,'likes' => $likes,'problems' => $problems,]);
@@ -82,7 +84,7 @@ class DashboardController extends Controller
         return redirect()->back();
     }
 
-/**
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -90,6 +92,10 @@ class DashboardController extends Controller
      */
     public function problemstore(Request $request)
     {
+        $request->validate([
+            'title' => 'required'
+        ]);
+
         DB::beginTransaction();
 
         try{
@@ -103,14 +109,23 @@ class DashboardController extends Controller
             $categroy = $request->input('category');
 
             // URLを保存する処理
-            $problem = new Problem();
+            /*$problem = new Problem();
             $problem->title = $title;
             $problem->user_id = $user_id;
             $problem->status = $status;
             $problem->description = $description;
             $problem->priority = $priority;
             $problem->category = $categroy;
-            $problem->save();
+            $problem->save();*/
+
+            Problem::create([
+                'title' => $title,
+                'user_id' => auth()->user()->id,
+                'status' => $status,
+                'description' => $description,
+                'priority' => $priority,
+                'category' => $categroy,
+            ]);
 
             $newProblemId = $problem->id;
 
@@ -122,12 +137,17 @@ class DashboardController extends Controller
                 $problem_url->save();
             }
 
+            // CSRFトークンを再生成して、二重送信対策
+            $request->session()->regenerateToken(); // <- この一行を追加
+
             DB::commit();
 
             // 適切なリダイレクト先にリダイレクトする
             return redirect()->back();
 
         } catch (\Expection $e) {
+            // CSRFトークンを再生成して、二重送信対策
+            $request->session()->regenerateToken(); // <- この一行を追加
             DB::rollback();
         }
     }
@@ -144,6 +164,9 @@ class DashboardController extends Controller
         $problem_url->problem_id = $request->input('problem_id');
         $problem_url->url = $request->input('problem_url');
         $problem_url->save();
+
+        // CSRFトークンを再生成して、二重送信対策
+        $request->session()->regenerateToken(); // <- この一行を追加
 
         // 適切なリダイレクト先にリダイレクトする
         return redirect()->back();

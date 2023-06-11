@@ -16,12 +16,21 @@ class ProblemReplyController extends Controller
     }
 
     public function Reply(Request $request, $id) {
+
+        $request->validate([
+            'user_id' => 'required',
+            'problem_id' => 'required',
+            'body' => 'required',
+        ]);
         
         ProblemReply::create([
             'user_id' => auth()->user()->id,
             'problem_id' => $id,
             'body' => $request->input('body'),
         ]);
+
+        // CSRFトークンを再生成して、二重送信対策
+        $request->session()->regenerateToken(); // <- この一行を追加
 
         return redirect()->route('historia.index');
     }

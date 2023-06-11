@@ -36,6 +36,51 @@
     </div>
 
 
+                    @if(isset($updateproblem))
+                    <p class="text-center text-3xl font-bold italic mb-2">困ったことリスト変更フォーム</p>
+                    <div id="updateproblemform" class="w-7/12 mb-3 mx-auto border border-black rounded bg-gray-600">
+                        <form id="problem" action="{{ route('updateproblem', ['id' => $updateproblem->id]) }}" method="POST">
+                            @csrf
+                            <div class="p-8">
+                                <label for="title" class="mb-4 text-gray-700 dark:text-white">タイトル:</label>
+                                <input type="text" id="title" name="title" value="{{ $updateproblem->title }}" placeholder="タイトルを入力してください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
+                                <label for="priority" class="mb-2 text-gray-700 dark:text-white">優先度:</label>
+                                <select id="priority" name="priority" class="text-black mb-2 text-gray-700"><br>
+                                    <option value="3" class="text-black">高</option>
+                                    <option value="2" class="text-black">中</option>
+                                    <option value="1" class="text-black">低</option>
+                                    <option value="0" class="text-black">済</option>
+                                </select>
+                                <label for="category" class="mb-2 text-gray-700 dark:text-white">Category:</label>
+                                <input type="text" id="category" name="category" value="{{ $updateproblem->category }}" placeholder="カテゴリーを入れてください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
+                                <div class="flex flex-col mb-4 mr-9">
+                                    <label for="description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
+                                    <div class="relative">
+                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $updateproblem->description }}</textarea><br>
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col mb-4 mr-9">
+                                    <label for="problem_url" class="mb-2 text-gray-700 dark:text-white">参考ULR:</label>
+                                    <input type="text" id="problem_url" name="problem_url" placeholder="解決に役立ったURLをコピペして下さい。" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
+                                </div>
+                                
+                                <div id="storediv" class="flex justify-end accordion-button">
+                                <button type="submit" id="storeButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    変更
+                                </button>
+                                </div>
+                                
+                                
+
+                            </div>
+                            
+                        </form>
+                    </div>
+                    @endif
+
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -80,6 +125,7 @@
             </div>
         </div>
     </div>
+    
         <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -88,6 +134,16 @@
                         <h2 class="text-xl">あなたの失敗履歴</h2>
                     </div>
                     <div id="problem-accordion" class="accordion-content">
+                    <div class="flex justify-end">
+  <label for="toggle" class="flex items-center cursor-pointer">
+    <div class="relative">
+      <input type="checkbox" id="toggle" class="sr-only">
+      <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+      <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+    </div>
+    <div class="ml-3 text-white font-medium">トグル</div>
+  </label>
+</div>
                         @if(isset($problems))
                             <ul class="mb-16 flex flex-col">
                                 @foreach($problems as $key => $problem)
@@ -100,10 +156,10 @@
                                             <input type="text" name="title" id="title" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1" value="{{ $problem->title }}" />
                                         
                                             <select name="priority" class="text-black rounded-md">
-                                                <option value="3" {{ $problem->priority == 0 ? 'selected' : '' }}>高</option>
-                                                <option value="2" {{ $problem->priority == 1 ? 'selected' : '' }}>中</option>
-                                                <option value="1" {{ $problem->priority == 2 ? 'selected' : '' }}>低</option>
-                                                <option value="0" {{ $problem->priority == 3 ? 'selected' : '' }}>済</option>
+                                                <option value="3" class="bg-red-500" {{ $problem->priority == 3 ? 'selected' : '' }}>高</option>
+                                                <option value="2" class="bg-yellow-500" {{ $problem->priority == 2 ? 'selected' : '' }}>中</option>
+                                                <option value="1" class="bg-green-500" {{ $problem->priority == 1 ? 'selected' : '' }}>低</option>
+                                                <option value="0" class="bg-gray-500" {{ $problem->priority == 0 ? 'selected' : '' }}>済</option>
                                             </select>
 
                                             <input type="text" name="category" id="category" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1" value="{{ $problem->category }}" />
@@ -202,7 +258,7 @@
                                 <div class="flex flex-col mb-4 mr-9">
                                     <label for="description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
                                     <div class="relative">
-                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea><br>
+                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('description') }}</textarea><br>
                                         <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
                                         </div>
                                     </div>
@@ -294,7 +350,37 @@
                                         <p class="text-blue-500 hover:underline  text-2xl">{{ $followingUser->name }}</p>
                                     </a>
                                     <form action="{{ route('delete', ['user' => $followingUser]) }}" method="POST">
+                                        @csrf
                                         <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " >フォロー解除</button>
+                                    </form>
+                                </li>
+                            @endforeach
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-4">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <div class="mb-4 accordion-toggle" onclick="toggleAccordion(this)">
+                    フォロワーリスト
+                    </div>
+                    <div id="follow-accordion" class="accordion-content">
+                        <ul>
+                            @if(isset(auth()->user()->followers))
+                            @foreach(auth()->user()->followers as $followerUser)
+                                <li class="mb-2 ml-4 flex justify-between">
+                                    <a href="{{ route('user.page', ['id' => $followerUser->id]) }}" target="_blank">
+                                        <p class="text-blue-500 hover:underline  text-2xl">{{ $followerUser->name }}</p>
+                                    </a>
+                                    <form action="{{ route('delete', ['user' => $followerUser]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="bg-red-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " >ブロック</button>
                                     </form>
                                 </li>
                             @endforeach
@@ -366,6 +452,16 @@
             LikeComment.classList.toggle("hidden");
             LikeAccordion.style.maxHeight = LikeAccordion.scrollHeight + 'px';
         }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js">
+//jQuery
+$(function(){
+  // 送信ボタンが1度クリックされたら、送信ボタンを非活性化する（二重submit対策）
+  $('form').submit(function() {
+    $("button[type='submit']").prop("disabled", true);
+  });
+});
 </script>
 
 <style>

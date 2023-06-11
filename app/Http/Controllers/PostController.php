@@ -119,6 +119,8 @@ class PostController extends Controller{
         // ユーザーのいいね情報の取得
         $likes = Like::Where('user_id',$userId)->pluck('url')->toArray();
 
+        $topKeywords = $this->search_history->getTopKeywords();
+
         return view('posts.index')->with([
             'questions' => $questions,
             'tags' => $tags['tags'],
@@ -127,6 +129,7 @@ class PostController extends Controller{
             'rankings' => $rankings,
             'user_id' => $userId,
             'likes' => $likes,
+            'topKeywords' => $topKeywords,
         ]);
 
          /*// index bladeに取得したデータを渡す

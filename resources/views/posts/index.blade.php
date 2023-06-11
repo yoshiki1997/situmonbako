@@ -10,11 +10,13 @@
             <div class="searchbox mb-4">
                 <form action="/search" method="GET">
                     @csrf
-                    <input type="text" name="keyword" placeholder="キーワードを入れてください" class="p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-black" />
+                    <input type="text" id="keyword-input" name="keyword" placeholder="キーワードを入れてください" class="p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-black" />
                     <br/>
-                    <input type="text" name="tags" placeholder="タグを入れてください" class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-black" />
+                    <ul id="topkeyword-list" class="hidden bg-white border border-gray-300 rounded-lg shadow-md py-2 px-3 text-black w-1/2 max-h-40 overflow-y-auto mb-4"></ul>
+                    <input type="text" id="tags-input" name="tags" placeholder="タグを入れてください" class="p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-black" />
                     <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg ml-2">検索</button>
                     <br/>
+                    <ul id="suggestion-list" class="hidden bg-white border border-gray-300 rounded-lg shadow-md py-2 px-3 text-black w-1/2 max-h-40 overflow-y-auto mb-4"></ul>
                     <div>
                         <p>タグは一つまで、Teratail専門です</p><p>キーワードはyoutubeとqittaから検索できます。</p>
                     </div>
@@ -289,4 +291,83 @@
             });
         });
     });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  // 入力フィールドを監視し、入力されるたびにサーバーにリクエストを送信
+  $('#tags-input').on('input', function() {
+    var tag = $(this).val();
+
+    // サーバーにリクエストを送信
+    $.ajax({
+      url: '{{ route('suggest') }}', // サーバー側の処理を行うエンドポイントを指定
+      method: 'GET',
+      data: { tag: tag }, // キーワードをリクエストパラメータとして送信
+      success: function(response) {
+        // 受け取った結果を解析し、候補を表示
+        var suggestions = response.suggestions;
+        // suggestionsを使用してドロップダウンリストやオートコンプリートの候補を表示
+        // ...
+        var suggestionList = $('#suggestion-list');
+
+        // 候補リストをクリア
+        suggestionList.empty();
+
+        // 候補リストにサジェストを追加
+        suggestions.forEach(function(suggestion) {
+        var listItem = $('<li></li>').text(suggestion);
+        suggestionList.append(listItem);
+        });
+
+        // 候補リストを表示
+        suggestionList.show();
+        }
+      });
+    })
+
+    // サジェストの候補をクリックしたときに入力フィールドに反映
+  $(document).on('click', '#suggestion-list li', function() {
+    var selectedSuggestion = $(this).text();
+    $('#tags-input').val(selectedSuggestion);
+    $('#suggestion-list').hide();
+
+  });
+});
+</script>
+<script>
+$(document).on('click', function(event) {
+  // クリックされた要素がサジェスト候補リスト内の要素でない場合、サジェスト候補リストを非表示にする
+  if (!$(event.target).closest('#suggestion-list').length && !$(event.target) == $('#tags-input')) {
+    $('#suggestion-list').hide();
+  }
+  if (!$(event.target).closest('#topkeyword-list').length && !$(event.target) == $('#keyword-input')) {
+    $('#topkeyword-list').hide();
+  }
+});
+</script>
+<script>
+    $(document).on('click', '#keyword-input', function() {
+        var topKeywords = <?php echo json_encode($topKeywords); ?>;
+        var topKeywordList = $('#topkeyword-list');
+
+        topKeywordList.empty();
+
+        topKeywords.forEach(function(topKeyword) {
+        var listItem = $('<li></li>').text(topKeyword);
+        topKeywordList.append(listItem);
+        });
+
+        topKeywordList.show();
+  });
+
+
+  
+    $(document).on('click', '#topkeyword-list li', function() {
+        selectedKeyword = $(this).text();
+        $('#keyword-input').val(selectedKeyword);
+
+        $('#topkeyword-list').hide();
+    })
+       
 </script>

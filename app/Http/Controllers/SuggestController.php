@@ -23,7 +23,7 @@ class SuggestController extends Controller
         $suggestions = [];
 
         // タグテーブルからキーワードに関連するタグを取得
-        $relatedTags = Tag::whereRaw('LOWER(tag_name) LIKE ?', ['%' . strtolower($tags) . '%'])->get();
+        $relatedTags = Tag::whereRaw('LOWER(tag_name) LIKE ?', [strtolower($tags) . '%'])->get();
 
         // 取得したタグをサジェスト候補として追加
         foreach ($relatedTags as $tag) {
