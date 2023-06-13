@@ -83,10 +83,10 @@
               </div>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $questions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $questions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg text-white']) }}
                     </div>
                 </div>
             </div>
@@ -144,7 +144,7 @@
               </div>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
                         {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
@@ -197,7 +197,7 @@
               </div>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
                         {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
@@ -245,7 +245,7 @@
               </div>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
                         {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
@@ -338,10 +338,10 @@ $(document).ready(function() {
 <script>
 $(document).on('click', function(event) {
   // クリックされた要素がサジェスト候補リスト内の要素でない場合、サジェスト候補リストを非表示にする
-  if (!$(event.target).closest('#suggestion-list').length && !$(event.target) == $('#tags-input')) {
+  if (!$(event.target).closest('#suggestion-list').length && !$(event.target).is('#tags-input')) {
     $('#suggestion-list').hide();
   }
-  if (!$(event.target).closest('#topkeyword-list').length && !$(event.target) == $('#keyword-input')) {
+  if (!$(event.target).closest('#topkeyword-list').length && !$(event.target).is('#keyword-input')) {
     $('#topkeyword-list').hide();
   }
 });

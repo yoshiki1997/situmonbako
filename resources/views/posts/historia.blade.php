@@ -17,6 +17,9 @@
             @error('keyword')
             <div class="text-center">{{ $message }}</div>
             @enderror
+            @error('body')
+            <div class="text-center">{{ $message }}</div>
+            @enderror
 
                 @if(isset($problems))
                 @foreach($problems as $key => $problem)
@@ -72,7 +75,7 @@
                                     <form action="{{ route('update.reply', ['id' => $reply->id]) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
-                                        <textarea name="body" id="body" cols="20" rows="1" class="text-black border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-16"></textarea>
+                                        <textarea name="body" id="body" cols="20" rows="1" class="text-black border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-16">{{ old('body') }}</textarea>
                                         <button type="submit">変更</button>
                                     </form>
                                 </div>
@@ -119,7 +122,7 @@
                 @endif
                 @if(isset($problems))
                 <div class="flex justify-center">
-                    <nav class="pagination flex">
+                    <nav class="pagination flex dark:text-white">
                         {{ $problems->links('pagination::tailwind') }}
                     </nav>
                 </div>

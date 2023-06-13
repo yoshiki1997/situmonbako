@@ -86,5 +86,6 @@ Route::post('/reply/{id}', [ProblemReplyController::class, 'Reply'])->name('repl
 
 Route::post('/follow/{user}/delete', [DashboardController:: class, 'deleteFollow'])->name('delete');
 Route::delete('/history/reply/{id}/delete', [KnowlegeController::class, 'destroyReply'])->name('destory.reply');
+Route::post('/destroy/history/{id}', [DashboardController::class, 'destroyHistory'])->name('destroy.history');
 
 require __DIR__.'/auth.php';

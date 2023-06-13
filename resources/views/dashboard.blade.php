@@ -36,6 +36,8 @@
     </div>
 
 
+
+
                     @if(isset($updateproblem))
                     <p class="text-center text-3xl font-bold italic mb-2">困ったことリスト変更フォーム</p>
                     <div id="updateproblemform" class="w-7/12 mb-3 mx-auto border border-black rounded bg-gray-600">
@@ -55,8 +57,8 @@
                                 <input type="text" id="category" name="category" value="{{ $updateproblem->category }}" placeholder="カテゴリーを入れてください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
                                 <div class="flex flex-col mb-4 mr-9">
                                     <label for="description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
-                                    <div class="relative">
-                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $updateproblem->description }}</textarea><br>
+                                    <div class="relative flex">
+                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none w-full sm:w-auto flex-grow">{{ $updateproblem->description }}</textarea><br>
                                         <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
                                         </div>
                                     </div>
@@ -100,7 +102,12 @@
                                     <a href="{{ $like->url }}" target="_blank">
                                         <p class="text-blue-500 hover:underline">{{ $like->title }}</p>
                                     </a>
+                                    <div class="flex">
                                     <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " onclick="likeComment({{$id}})">コメント</button>
+                                    <svg data-user-id="{{ $like->user->id }}" data-title="{{ $like->title }}" data-url="{{ $like->url }}" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 heart-icon fill-pink-500" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    </div>
                                 </li>
                                 @if(isset($like->comment))
                                 <li id="like_comment" class="mb-2 ml-8">
@@ -266,8 +273,17 @@
 
                                 <div class="flex flex-col mb-4 mr-9">
                                     <label for="problem_url" class="mb-2 text-gray-700 dark:text-white">参考ULR:</label>
-                                    <input type="text" id="problem_url" name="problem_url" placeholder="解決に役立ったURLをコピペして下さい。" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
+                                    <div id="problem_url_form" class="relative flex mb-4">
+                                        <input type="text" id="problem_url" name="problem_url" placeholder="解決に役立ったURLをコピペして下さい。" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
+                                        <button type="button" id="add_url" class="absolute top-0 right-0 mt-2 mr-2 text-gray-500 rounded-rfocus:outline-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
+
+
 
                                 <div class="pl-12">
                                 <label for="status-unresolved">未</label>
@@ -309,7 +325,13 @@
                                         <p class="text-blue-500 hover:underline">
                                             <a href="{{ $history->url }}" target="_blank">{{ $history->title }}</a>
                                         </p>
+                                    <div class="history flex" data-user-id="{{ $history->user->id }}" data-history-id="{{ $history->id }}">
+                                    <form action="{{ route('destroy.history', ['id' => $history->id]) }}" method="POST">
+                                        @csrf
+                                        <button id="destroy-history" type="submit" class=" destroy-history bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ">取り消し</button>
+                                    </form>
                                     <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " onclick="Comment({{$id}})">コメント</button>
+                                    </div>
                                 </li>
                                 @if(isset($history->comment))
                                 <li id="history_de" class="mb-2 ml-8">
@@ -453,6 +475,88 @@
             LikeAccordion.style.maxHeight = LikeAccordion.scrollHeight + 'px';
         }
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const heartIcons = document.querySelectorAll('.heart-icon');
+        
+        heartIcons.forEach(function(icon) {
+            icon.addEventListener('click', function() {
+                this.classList.toggle('fill-pink-500');
+            
+
+        const user_id = this.getAttribute("data-user-id");
+        const url = this.getAttribute("data-url");
+        const title = this.getAttribute("data-title");
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch("/likes", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        user_id: user_id,
+                        title: title,
+                        url: url
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // レスポンスに応じて必要な処理を追加します
+                })
+                .catch(error => {
+                    // エラーハンドリングを行います
+                });
+            });
+        });
+    });
+
+
+</script>
+
+<script>
+  const addButton = document.getElementById("add_url");
+  const maxInputs = 10;
+  let inputCount = 1;
+
+  addButton.addEventListener("click", () => {
+    if (inputCount < maxInputs) {
+      const inputContainer = document.createElement("div");
+      inputContainer.classList.add("relative", 'flex', "mb-4",);
+
+      const newInput = document.createElement("input");
+      newInput.type = "text";
+      newInput.name = "problem_url" + inputCount;
+      newInput.placeholder = "解決に役立ったURLをコピペして下さい。";
+      newInput.classList.add("flex-grow", "text-black", "border", "border-gray-300", "rounded", "px-4", "py-2", "mb-2", "focus:outline-none", "focus:ring-2", "focus:ring-blue-500");
+
+      const deleteButton = document.createElement("button");
+      deleteButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      `;
+      deleteButton.classList.add("absolute", "top-0", "right-0", "mt-2", "mr-2", "text-gray-500", "focus:outline-none");
+
+      deleteButton.addEventListener("click", () => {
+        inputContainer.remove();
+        inputCount--;
+      });
+
+      inputContainer.appendChild(newInput);
+      inputContainer.appendChild(deleteButton);
+
+      const parentContainer = document.getElementById("problem_url_form").parentElement;
+      const addButton = document.getElementById("problem_url_form");
+      parentContainer.insertBefore(inputContainer, addButton.nextSibling);
+
+      inputCount++;
+    }
+  });
+</script>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js">
 //jQuery

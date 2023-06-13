@@ -16,6 +16,10 @@ class Like extends Model
         'comment',
     ];
 
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
     public function updateComment($request, $like) {
         $result = $like->fill([
             'comment' => $request->like_comment,

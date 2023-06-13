@@ -34,8 +34,8 @@ class DashboardController extends Controller
     public function index()
     {
         $user_id = auth()->user()->id;
-        $historys = History::select('id', 'url', 'title', 'comment')->where('user_id', $user_id)->get();
-        $likes = Like::select('id', 'url', 'title', 'comment')->where('user_id',$user_id)->get();
+        $historys = History::select('id', 'url', 'title', 'comment', 'user_id')->where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
+        $likes = Like::select('id', 'url', 'title', 'comment', 'user_id')->where('user_id',$user_id)->get();
         $problems = Problem::where('user_id',$user_id)->with('problemUrl')->orderBy('priority', 'desc')->get();
         //$problem_urls = Problem_URL::where('problem_id', $problems->id)->get();
 
@@ -91,7 +91,7 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function problemstore(Request $request)
-    {
+    {  
         $request->validate([
             'title' => 'required'
         ]);
@@ -100,6 +100,22 @@ class DashboardController extends Controller
 
         try{
             // URLとタイトルの取得
+            $urls = [];
+            for($c = 0; $c <= 9; $c++)
+            {
+                if($c == 0)
+                {
+                    $urls[0] = $request->input('problem_url');
+                }else 
+                {
+                    if($request->input('problem_url' . $c) == null)
+                    {
+                        break;   
+                    }
+                    $urls[$c] = $request->input('problem_url' . $c);
+                }
+            }
+            $urls = $urls;
             $url = $request->input('problem_url'); 
             $title = $request->input('title');
             $user_id = auth()->user()->id;
@@ -118,7 +134,7 @@ class DashboardController extends Controller
             $problem->category = $categroy;
             $problem->save();*/
 
-            Problem::create([
+            $problem = Problem::create([
                 'title' => $title,
                 'user_id' => auth()->user()->id,
                 'status' => $status,
@@ -129,12 +145,19 @@ class DashboardController extends Controller
 
             $newProblemId = $problem->id;
 
-            $problem_url = new Problem_URL();
+            /*$problem_url = new Problem_URL();
             if(isset($url))
             {
                 $problem_url->problem_id = $newProblemId;
                 $problem_url->url = $url;
                 $problem_url->save();
+            }*/
+
+            foreach($urls as $url){
+                Problem_URL::create([
+                    'problem_id' => $newProblemId,
+                    'url' => $url,
+                ]);
             }
 
             // CSRFトークンを再生成して、二重送信対策
@@ -260,6 +283,19 @@ class DashboardController extends Controller
         $follow = $this->user->follow($user);
         
         return redirect()->back();
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyHistory($id)
+    {
+        $destroyHistory = History::destroy($id);
+        
+        return redirect()->route('dashboard');
     }
 
     public function deleteFollow(User $user) {

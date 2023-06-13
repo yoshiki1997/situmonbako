@@ -129,6 +129,10 @@ class KnowlegeController extends Controller{
 
     public function updateReply(Request $request,$id)
     {
+        $request->validate([
+            'body' => 'required',
+        ]);
+
         $reply = ProblemReply::find($id);
         
         $reply->fill([

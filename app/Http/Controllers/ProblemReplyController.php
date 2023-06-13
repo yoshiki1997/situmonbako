@@ -18,8 +18,6 @@ class ProblemReplyController extends Controller
     public function Reply(Request $request, $id) {
 
         $request->validate([
-            'user_id' => 'required',
-            'problem_id' => 'required',
             'body' => 'required',
         ]);
         

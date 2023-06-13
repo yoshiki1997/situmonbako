@@ -19,6 +19,10 @@ class History extends Model
         'comment',
     ];
 
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
     public function updateComment($request,$history){
         $result = $history->fill([
             'comment' => $request->comment,
