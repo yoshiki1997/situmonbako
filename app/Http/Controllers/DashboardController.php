@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\Tips;
 use App\Models\History;
 use App\Models\Problem;
+use App\Models\Category;
 use App\Models\Problem_URL;
+use App\Models\UserImage;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +25,7 @@ class DashboardController extends Controller
         $this->history = new History();
         $this->Tips = new Tips();
         $this->like = new Like();
+        $this->user = new UserImage();
         $this->user = new User();
     }
 
@@ -36,10 +39,11 @@ class DashboardController extends Controller
         $user_id = auth()->user()->id;
         $historys = History::select('id', 'url', 'title', 'comment', 'user_id')->where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
         $likes = Like::select('id', 'url', 'title', 'comment', 'user_id')->where('user_id',$user_id)->get();
-        $problems = Problem::where('user_id',$user_id)->with('problemUrl')->orderBy('priority', 'desc')->get();
+        $problems = Problem::where('user_id',$user_id)->with('problemUrl')->with('categories')->orderBy('priority', 'desc')->get();
+        $images = UserImage::where('user_id', $user_id)->get();
         //$problem_urls = Problem_URL::where('problem_id', $problems->id)->get();
 
-        return view('dashboard')->with(['historys' => $historys,'likes' => $likes,'problems' => $problems,]);
+        return view('dashboard')->with(['historys' => $historys,'likes' => $likes,'problems' => $problems, 'images' => $images,]);
     }
 
     /**
@@ -99,6 +103,8 @@ class DashboardController extends Controller
         DB::beginTransaction();
 
         try{
+            $categories = explode(',', $request->categories);
+            $categories = array_map('trim', $categories);
             // URLとタイトルの取得
             $urls = [];
             for($c = 0; $c <= 9; $c++)
@@ -152,12 +158,38 @@ class DashboardController extends Controller
                 $problem_url->url = $url;
                 $problem_url->save();
             }*/
+            
+                foreach($urls as $url){
+                    if($url !== null){
+                    Problem_URL::create([
+                        'problem_id' => $newProblemId,
+                        'url' => $url,
+                    ]);
+                }
+                }
 
-            foreach($urls as $url){
-                Problem_URL::create([
-                    'problem_id' => $newProblemId,
-                    'url' => $url,
-                ]);
+            foreach($categories as $category){
+                $existCategory = Category::where('category', $category)->first();
+                if($existCategory){
+                    $newProblem = Problem::find($newProblemId);
+                    $existPivot = $newProblem->categories()->where('category', $existCategory)->exists();
+                    if($existPivot){
+                        continue;
+                    }else{
+                        $newProblemId->categories()->attach($existCategory);
+                    }
+                }else {
+                    $newProblem = Problem::find($newProblemId);
+                    $existPivot = $newProblem->categories()->where('category', $category)->exists();
+                    if($existPivot){
+                        continue;
+                    }else{
+                        $categoryId = Category::create([
+                            'category' => $category,
+                        ]);
+                        $newProblem->categories()->attach($categoryId->id);
+                    }
+                }
             }
 
             // CSRFトークンを再生成して、二重送信対策
@@ -226,9 +258,61 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {       
+
+        DB::beginTransaction();
+
         $problem = Problem::find($id);
         $update_problem = $this->problem->updateProblem($request, $problem);
+        // $existCategory = Category::where('category', $request->category)->first();
+
+        /*if($existCategory == null)
+        {
+            $category = Category::create([
+                'category' => $request->category,
+            ]);
+            $result = $problem->categories()->attach($category);
+        }else{
+            $existkankei = $problem->categories();
+            if($existkankei){
+                return redirect()->route('dashboard');
+            }else{
+            $category = $existCategory;
+            $result = $problem->categories()->attach($category);
+            }
+        }*/
+        
+        $categories = explode(',', $request->categories);
+        $categories = array_map('trim', $categories);
+
+        foreach($categories as $category){
+            $existCategory = Category::where('category', $category)->first();
+            if($existCategory){
+                $updateProblem = Problem::find($id);
+                $existPivot = $updateProblem->categories()->where('category', $existCategory)->exists();
+                if($existPivot){
+                    continue;
+                }else{
+                    $updateProblem->categories()->attach($existCategory->id);
+                }
+            }else {
+                $updatedProblem = Problem::find($id);
+                $existPivot = $updateProblem->categories()->where('category', $category)->exists();
+                if($existPivot){
+                    continue;
+                }else{
+                    $category = Category::create([
+                        'category' => $category,
+                    ]);
+                    $updateProblem->categories()->attach($category->id);
+                }
+            }
+        }
+
+        // CSRFトークンを再生成して、二重送信対策
+        $request->session()->regenerateToken(); // <- この一行を追加
+
+        DB::commit();
 
         return redirect()->route('dashboard');
     }

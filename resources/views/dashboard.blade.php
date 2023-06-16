@@ -6,13 +6,24 @@
     </x-slot>
 
     <div id="profile" class="w-64 h-64 bg-gyra-700 border border-black rounded-md flex flex-col justify-center items-center m-auto">
-        <div id="user_image" class="rounded-full h-32 w-32 overflow-hidden">
-            @if(isset($user->icon))
-            <img src="{{ asset('$user->icon') }}" alt="User Icon" class="w-full h-full object-cover">
-            @else
-            <img src="{{ asset('images/noimage.jpg') }}" alt="User Icon" class="w-full h-full object-cover">
-            @endif
-        </div>
+        @if(!isset(auth()->user()->icon))
+        <p id="iconExplanation" class="">画像ファイルをドラッグ＆ドロップで<br>設定できます。</p>
+        @endif
+            <form action="{{ route('profile.img') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div id="dropzone" class="dropzone">
+                    <div id="user_image" class="rounded-full h-32 w-32 overflow-hidden">
+                    @if(isset($user->icon))
+                    <img src="{{ asset('auth()->user()->userImage()->icon') }}" alt="User Icon" class="w-full h-full object-cover">
+                    @else
+                    <img src="{{ asset('images/noimage.jpg') }}" alt="User Icon" class="w-full h-full object-cover">
+                    @endif
+                    </div>
+                </div>
+                
+                <button type="submit">保存</button>
+            </form>
+        
         <div id="user_info" class="flex justify-evenly w-full h-20 items-end">
             <div class="flex flex-col">
                 <div id="user_name">
@@ -157,24 +168,47 @@
                                 @php
                                 $id = $key + 1;
                                 @endphp
-                                    <li class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between">
-                                    <form id="storeform{{ $problem->id }}" class="w-full flex flex-row items-center justify-between" action="{{ route('updateproblem', ['id' => $problem->id]) }}" method="POST">
+                                    <div class="my-2 p-2 border rounded">
+                                    <li class="mb-2 ml-4 mt-4 flex flex-col justify-between">
+                                    <form id="storeform{{ $problem->id }}" class="w-full flex flex-col justify-between" action="{{ route('updateproblem', ['id' => $problem->id]) }}" method="POST">
                                         @csrf
-                                            <input type="text" name="title" id="title" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1" value="{{ $problem->title }}" />
-                                        
-                                            <select name="priority" class="text-black rounded-md">
-                                                <option value="3" class="bg-red-500" {{ $problem->priority == 3 ? 'selected' : '' }}>高</option>
-                                                <option value="2" class="bg-yellow-500" {{ $problem->priority == 2 ? 'selected' : '' }}>中</option>
-                                                <option value="1" class="bg-green-500" {{ $problem->priority == 1 ? 'selected' : '' }}>低</option>
+                                            <div class="flex my-8 gap-32">
+                                    
+                                            <select id="prioritySelect" name="priority" class="text-black rounded-md prioritySelect" onchange="updateBackground(this)">
+                                                <option value="3" class="bg-selecter-high" {{ $problem->priority == 3 ? 'selected' : '' }}>高</option>
+                                                <option value="2" class="bg-selecter-middel" {{ $problem->priority == 2 ? 'selected' : '' }}>中</option>
+                                                <option value="1" class="bg-selecter-low" {{ $problem->priority == 1 ? 'selected' : '' }}>低</option>
                                                 <option value="0" class="bg-gray-500" {{ $problem->priority == 0 ? 'selected' : '' }}>済</option>
                                             </select>
 
-                                            <input type="text" name="category" id="category" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1" value="{{ $problem->category }}" />
+                                            <input type="text" name="title" id="title" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1 flex-grow" value="{{ $problem->title }}" />
 
-                                            <p class="text-black dark:text-white hover:underline mr-4">{{ $problem->updated_at }}</p>
-                                            <div class="flex justify-end">
+                                            </div>
+
+                                            <div class="flex justify-between my-2">
+                                            <input type="hidden" id="tagValue_{{$id}}" class="tagValueInput2" name="categories" value="{{  $problem->categories->pluck('category')->implode(',') }}">
+                                            <div id="tagContainer_{{$id}}" class="flex flex-wrap gap-2 mb-2 tagContainer2">
+                                                Category:
+                                                    @if(isset($problem->categories))
+                                                    @foreach($problem->categories as $category)
+                                                        <span class="bg-blue-500 text-white px-2 py-1 rounded flex">
+                                                            <p>{{ $category->category }}</p>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 delete-button" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                            </svg>
+                                                        </span>
+                                                    @endforeach
+                                                    @endif
+                                            </div>
+                                            <input type="text" name="category" id="categories_{{$id}}" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1 categories" value="{{ $problem->category }}" />
+                                            <button type="button" class="bg-blue-500 text-white px-4 py-2 ml-4 rounded addProblemCategoryButton" data-id="{{$id}}">追加</button><br>
+
+                                            </div>
+                                            
                                     </form>
-                                    
+                                    <div class="flex justify-end">
+                                            <div class="flex flex-col">
+                                                <p class="text-black dark:text-white hover:underline mr-4 self-end">{{ $problem->updated_at }}</p>
                                                 <ul class="flex flex-row py-4">
                                                     <li class="mr-4">
                                                         <button type="button" class="bg-purple-500 hover:bg-purple-700 dark:text-white font-bold py-2 px-4 rounded" onclick="openDescription({{ $id }})">
@@ -201,14 +235,17 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                            </div>
                                     </li>
                                     <li id="description_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
                                         @if(isset($problem->description))
-                                            <form action="{{ route('description_update', ['id' => $problem->id]) }}" method="POST">
+                                            <form class="flex justify-center w-full" action="{{ route('description_update', ['id' => $problem->id]) }}" method="POST">
                                                 @csrf
+                                                <div class="flex flex-col w-full mr-4">
                                                 <label for="problem_description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
-                                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">保存</button>
                                                 <textarea name="description" id="description" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ $problem->description }}</textarea><br>
+                                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded self-end">保存</button>
+                                                </div>
                                             </form>
                                         @endif
                                     </li>
@@ -241,6 +278,7 @@
                                             </div>
                                         </div>
                                     </li>
+                                    </div>
                                 @endforeach
                             </ul>
                         @else
@@ -251,21 +289,33 @@
                         <form id="problem" action="{{ Route('problem.store') }}" method="POST">
                             @csrf
                             <div>
+                                <div class="mr-9 mb-4">
+
                                 <label for="title" class="mb-4 text-gray-700 dark:text-white">タイトル:</label>
-                                <input type="text" id="title" name="title" placeholder="タイトルを入力してください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
+                                <input type="text" id="title" name="title" placeholder="タイトルを入力してください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"><br>
+
+                                </div>
+
                                 <label for="priority" class="mb-2 text-gray-700 dark:text-white">優先度:</label>
-                                <select id="priority" name="priority" class="text-black mb-2 text-gray-700"><br>
-                                    <option value="3" class="text-black">高</option>
-                                    <option value="2" class="text-black">中</option>
-                                    <option value="1" class="text-black">低</option>
-                                    <option value="0" class="text-black">済</option>
+                                <select id="prioritySelect" name="priority" class="text-black rounded-md prioritySelect" onchange="updateBackground(this)">
+                                    <option value="3" class="bg-selecter-high" {{ $problem->priority == 3 ? 'selected' : '' }}>高</option>
+                                    <option value="2" class="bg-selecter-middel" {{ $problem->priority == 2 ? 'selected' : '' }}>中</option>
+                                    <option value="1" class="bg-selecter-low" {{ $problem->priority == 1 ? 'selected' : '' }}>低</option>
+                                    <option value="0" class="bg-gray-500" {{ $problem->priority == 0 ? 'selected' : '' }}>済</option>
                                 </select>
-                                <label for="category" class="mb-2 text-gray-700 dark:text-white">Category:</label>
-                                <input type="text" id="category" name="category" placeholder="カテゴリーを入れてください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
+
+                                
+                                <input type="hidden" id="tagValue" name="categories">
+                                <label for="category" class="mb-4 ml-4 text-gray-700 dark:text-white">Category:</label>
+                                <input type="text" name="category" id="categories" placeholder="カテゴリーを入れてください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button id="addCategoryButton" type="button" class="bg-blue-500 text-white px-4 py-2 ml-4 rounded">追加</button><br>
+
+                                <div id="tagContainer" class="flex flex-wrap gap-2 mb-8 mt-8">Category:</div>
+                                
                                 <div class="flex flex-col mb-4 mr-9">
                                     <label for="description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
                                     <div class="relative">
-                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('description') }}</textarea><br>
+                                        <textarea name="description" id="description" placeholder="詳細を入力してください" cols="70" rows="6" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">{{ old('description') }}</textarea><br>
                                         <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
                                         </div>
                                     </div>
@@ -285,17 +335,11 @@
 
 
 
-                                <div class="pl-12">
-                                <label for="status-unresolved">未</label>
-                                <label for="status-resolved" class="pl-4">済</label><br>
-                                </div>
-                                <label class="mb-2 text-gray-700 dark:text-white">状況:</label>
-                                <input type="radio" name="status" value="未" checked id="status-unresovled" class="border boder-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <input type="radio" name="status" value="済" id="status-resovled" class="border boder-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                
                                 
 
                             </div>
-                            <div id="storediv" class="flex justify-end accordion-button hidden">
+                            <div id="storediv" class="flex justify-end accordion-button hidden mr-9">
                                 <button type="submit" id="storeButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     追加
                                 </button>
@@ -328,7 +372,7 @@
                                     <div class="history flex" data-user-id="{{ $history->user->id }}" data-history-id="{{ $history->id }}">
                                     <form action="{{ route('destroy.history', ['id' => $history->id]) }}" method="POST">
                                         @csrf
-                                        <button id="destroy-history" type="submit" class=" destroy-history bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ">取り消し</button>
+                                        <button id="destroy-history" type="submit" class=" destroy-history bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-4">取り消し</button>
                                     </form>
                                     <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " onclick="Comment({{$id}})">コメント</button>
                                     </div>
@@ -513,15 +557,135 @@
         });
     });
 
+    var selectElements = document.querySelectorAll('.prioritySelect');
+    selectElements.forEach(function(selectElement) {
+        // 初期選択状態での色を適用する
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var selectedColor = selectedOption.classList[0];
+        selectElement.className = 'text-black rounded-md ' + selectedColor; // クラスを変更して背景色を適用する
+
+        selectElement.addEventListener('change', function() {
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var selectedColor = selectedOption.classList[0]; // オプションのクラスから色を取得する
+
+            selectElement.className = 'text-black rounded-md ' + selectedColor; // クラスを変更して背景色を適用する
+    });
+});
+
+const categoryInput = document.getElementById('categories');
+const categoryInput2 = document.querySelectorAll('.categories');
+const tagContainer = document.getElementById('tagContainer');
+const addCategoryButton = document.getElementById('addCategoryButton');
+const tagValueInput = document.getElementById('tagValue');
+
+function createTag2(id) {console.log(this);
+    const closestCategoryInput = document.getElementById('categories_' + id);
+    const closestTagContainer = document.getElementById('tagContainer_' + id);
+    const closestTagValueInput = document.getElementById('tagValue_' + id);
+    console.log(closestCategoryInput);
+    console.log(closestTagContainer);
+    console.log(closestTagValueInput);
+
+    if (closestCategoryInput.value.trim() !== '' && closestTagContainer && closestTagValueInput) {
+      const tag = document.createElement('span');
+      const text = document.createElement('p');
+      text.textContent = closestCategoryInput.value.trim();
+      tag.classList.add('bg-blue-500', 'text-white', 'px-2', 'py-1', 'rounded', 'flex');
+      tag.appendChild(text);
+      closestTagContainer.appendChild(tag);
+
+      closestCategoryInput.value = '';
+
+      closestTagValueInput.value += (closestTagValueInput.value !== '' ? ',' : '') + text.textContent;
+
+      const deleteButton = document.createElement('button');
+      tag.appendChild(deleteButton);
+      deleteButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      `;
+      deleteButton.classList.add("ml-2", "text-gray-500", "focus:outline-none");
+
+      deleteButton.addEventListener("click", () => {
+        tag.remove();
+      });
+
+    }
+}
+
+function createTag() {
+
+    if (categoryInput.value.trim() !== '') {
+      const tag = document.createElement('span');
+      const text = document.createElement('p');
+
+      text.textContent = categoryInput.value.trim();
+      tag.classList.add('bg-blue-500', 'text-white', 'px-2', 'py-1', 'rounded', 'flex');
+      tag.appendChild(text);
+      tagContainer.appendChild(tag);
+
+      categoryInput.value = '';
+
+      tagValueInput.value += (tagValueInput.value !== '' ? ',' : '') + text.textContent;
+
+      const deleteButton = document.createElement('button');
+      tag.appendChild(deleteButton);
+      deleteButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      `;
+      deleteButton.classList.add("ml-2", "text-gray-500", "focus:outline-none");
+
+      deleteButton.addEventListener("click", () => {
+        tag.remove();
+      });
+
+    }
+
+}
+
+const buttons = document.querySelectorAll('.addProblemCategoryButton');
+
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        const id = event.target.dataset.id;
+        createTag2(id);
+    });
+});
+
+categoryInput.addEventListener('keyup', function(event) {
+  if (event.key === 'Enter') {
+    createTag();
+  }
+});
+
+addCategoryButton.addEventListener('click', function() {
+  createTag();
+});
+
+// 削除ボタンがクリックされたときの処理
+function handleDeleteButtonClick(event) {
+  const targetElement = event.target.closest('span'); // 削除ボタンの親要素を取得
+  targetElement.remove(); // 親要素を削除
+}
+
+// 削除ボタンにクリックイベントのリスナーを追加
+const deleteButtons = document.querySelectorAll('.delete-button');
+deleteButtons.forEach(button => {
+  button.addEventListener('click', handleDeleteButtonClick);
+});
+
 
 </script>
 
 <script>
-  const addButton = document.getElementById("add_url");
+  const addUrlButton = document.getElementById("add_url");
   const maxInputs = 10;
   let inputCount = 1;
 
-  addButton.addEventListener("click", () => {
+  addUrlButton.addEventListener("click", () => {
     if (inputCount < maxInputs) {
       const inputContainer = document.createElement("div");
       inputContainer.classList.add("relative", 'flex', "mb-4",);
@@ -555,6 +719,48 @@
       inputCount++;
     }
   });
+
+  const dropzone = document.getElementById('dropzone');
+  
+  // ドラッグ＆ドロップエリアのイベントリスナーを設定
+  dropzone.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+
+  dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('dragover');
+  });
+
+  dropzone.addEventListener('drop', (event) => {
+    event.preventDefault();
+    dropzone.classList.remove('dragover');
+
+    const file = event.dataTransfer.files[0];
+
+    // DataTransfer オブジェクトを作成
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+
+    // 既存の img 要素を取得
+    const existingImage = dropzone.querySelector('img');
+
+    // 既存の img 要素が存在する場合、新しい画像で置き換える
+    existingImage.src = URL.createObjectURL(file);
+
+    // 選択されたファイルをフォームに追加
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'icon';
+    input.files = dataTransfer.files;
+    input.classList.add('hidden');
+
+    dropzone.appendChild(input);
+
+    const iconExplanation = document.getElementById('iconExplanation');
+    iconExplanation.classList.add('hidden');
+  }
+);
 </script>
 
 

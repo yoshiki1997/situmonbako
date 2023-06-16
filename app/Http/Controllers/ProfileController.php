@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\UserImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,5 +57,19 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function setImg(Request $request)
+    {
+        $user_id = auth()->user()->id;
+
+        $icon = $request->icon;
+
+        UserImage::updateOrCreate([
+            'user_id' => $user_id,
+            'icon' => $icon,
+        ]);
+
+        return Redirect::route('dashboard');
     }
 }

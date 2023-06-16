@@ -31,6 +31,7 @@ Route::get('/dashboard', [DashboardController::class, 'index']
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile', [ProfileController::class, 'setImg'])->name('profile.img');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -81,6 +82,10 @@ Route::get('/suggest', [SuggestController::class, 'suggest'])->name('suggest');
 // ProblemReplyController
 
 Route::post('/reply/{id}', [ProblemReplyController::class, 'Reply'])->name('reply');
+
+// FavoriteProblemController
+
+//Route::get('/fav/{user_id}', [FavoriteController::class 'index'])->name('fav.index');
 
 //Delete
 

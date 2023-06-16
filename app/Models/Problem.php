@@ -36,6 +36,11 @@ class Problem extends Model
         return $this->belongsToMany(User::class, 'problem_liks', 'problem_id', 'user_id')->withTimestamp();
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_problem', 'problem_id', 'category_id');
+    }
+
     public function latestCreatedAtProblem()
     {
         $result = Problem::with('problemUrl')->latest()->paginate(10);

@@ -30,6 +30,13 @@
                         {{ __('困ったことリスト') }}
                     </x-nav-link>
                 </div>
+
+                {{--<!-- Index Links -->
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('fav.index')" :active="request()->routeIs('fav.index')">
+                        {{ __('お気に入りリスト') }}
+                    </x-nav-link>
+                </div>--}}
             </div>
 
             
