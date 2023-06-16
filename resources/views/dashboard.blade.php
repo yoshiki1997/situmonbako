@@ -6,16 +6,16 @@
     </x-slot>
 
     <div id="profile" class="w-64 h-64 bg-gyra-700 border border-black rounded-md flex flex-col justify-center items-center m-auto">
-        @if(!isset(auth()->user()->icon))
+        @if(!isset(auth()->user()->userImage->icon))
         <p id="iconExplanation" class="">画像ファイルをドラッグ＆ドロップで<br>設定できます。</p>
         @endif
             <form action="{{ route('profile.img') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div id="dropzone" class="dropzone">
                     <div id="user_image" class="rounded-full h-32 w-32 overflow-hidden">
-                    @if(isset($user->icon))
-                    <img src="{{ asset('auth()->user()->userImage()->icon') }}" alt="User Icon" class="w-full h-full object-cover">
-                    @else
+                    @if(isset(auth()->user()->userImage->icon))
+                    <img src="/storage/{{ auth()->user()->userImage->icon }}" alt="User Icon" class="w-full h-full object-cover">
+                    @else              
                     <img src="{{ asset('images/noimage.jpg') }}" alt="User Icon" class="w-full h-full object-cover">
                     @endif
                     </div>
@@ -185,7 +185,7 @@
 
                                             </div>
 
-                                            <div class="flex justify-between my-2">
+                                            {{--<div class="flex justify-between my-2">
                                             <input type="hidden" id="tagValue_{{$id}}" class="tagValueInput2" name="categories" value="{{  $problem->categories->pluck('category')->implode(',') }}">
                                             <div id="tagContainer_{{$id}}" class="flex flex-wrap gap-2 mb-2 tagContainer2">
                                                 Category:
@@ -203,10 +203,34 @@
                                             <input type="text" name="category" id="categories_{{$id}}" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1 categories" value="{{ $problem->category }}" />
                                             <button type="button" class="bg-blue-500 text-white px-4 py-2 ml-4 rounded addProblemCategoryButton" data-id="{{$id}}">追加</button><br>
 
-                                            </div>
+                                            </div>--}}
                                             
                                     </form>
-                                    <div class="flex justify-end">
+                                    <div class="flex justify-between">
+
+                                        
+                                        
+                                            <div class="flex flex-col my-2">
+                                                <div class="flex mb-2">
+                                                <input type="hidden" id="tagValue_{{$id}}" class="tagValueInput2" name="categories" value="{{  $problem->categories->pluck('category')->implode(',') }}">
+                                                <input type="text" name="category" id="categories_{{$id}}" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1 categories" value="{{ $problem->category }}" />
+                                                <button type="button" class="bg-blue-500 text-white px-4 py-2 ml-4 rounded addProblemCategoryButton" data-id="{{$id}}">追加</button><br>
+                                                </div>
+                                                <div id="tagContainer_{{$id}}" class="flex flex-wrap gap-2 mb-2 tagContainer2">
+                                                    Category:
+                                                        @if(isset($problem->categories))
+                                                        @foreach($problem->categories as $category)
+                                                            <span class="bg-blue-500 text-white px-2 py-1 rounded flex">
+                                                                <p>{{ $category->category }}</p>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 delete-button" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                                </svg>
+                                                            </span>
+                                                        @endforeach
+                                                        @endif
+                                                </div>
+                                            </div>
+
                                             <div class="flex flex-col">
                                                 <p class="text-black dark:text-white hover:underline mr-4 self-end">{{ $problem->updated_at }}</p>
                                                 <ul class="flex flex-row py-4">
@@ -235,7 +259,8 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                            </div>
+                                        
+                                    </dvi>
                                     </li>
                                     <li id="description_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
                                         @if(isset($problem->description))

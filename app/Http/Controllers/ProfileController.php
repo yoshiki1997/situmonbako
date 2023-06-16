@@ -61,14 +61,22 @@ class ProfileController extends Controller
 
     public function setImg(Request $request)
     {
+        $validator = $request->validate([
+            'icon' => 'required'
+        ]);
+
         $user_id = auth()->user()->id;
 
-        $icon = $request->icon;
+        $icon = $request->file('icon');
+        
+        $path = $icon->store('public');
 
-        UserImage::updateOrCreate([
-            'user_id' => $user_id,
-            'icon' => $icon,
-        ]);
+        $path = str_replace('public/', '', $path);
+
+        $userImages = UserImage::updateOrCreate(
+            ['user_id' => $user_id],
+            ['icon' => $path]
+        );
 
         return Redirect::route('dashboard');
     }
