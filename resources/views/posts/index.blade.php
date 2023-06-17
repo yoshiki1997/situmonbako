@@ -200,7 +200,7 @@
             <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $qittaposts->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>

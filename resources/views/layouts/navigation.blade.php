@@ -31,21 +31,23 @@
                     </x-nav-link>
                 </div>
 
-                {{--<!-- Index Links -->
+                <!-- Index Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('fav.index')" :active="request()->routeIs('fav.index')">
+                    @if(Auth::check())
+                    <x-nav-link :href="route('fav.index', ['user_id' => auth()->user()->id])" :active="request()->routeIs('fav.index')">
                         {{ __('お気に入りリスト') }}
                     </x-nav-link>
-                </div>--}}
+                    @endif
+                </div>
             </div>
 
             
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
-                @if(isset($uesr->icon))
+                @if(isset(auth()->user()->userImage->icon))
                 <div class="rounded-full h-8 w-8 overflow-hidden object-cover">
-                    <img src="{{ $user->icon }}" alt="myicon" />
+                    <img src="/storage/{{ auth()->user()->userImage->icon }}" alt="myicon" />
                 </div>
                 @else
                 <div class="rounded-full h-8 w-8 overflow-hidden object-cover">

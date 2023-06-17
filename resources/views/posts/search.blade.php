@@ -227,6 +227,69 @@
             </div>
             @endif
 
+            <!-- Stack Exchange API -->
+{{--dd($stackExchangeQuestions);--}}
+{{-- dd($stackExchangeQuestions[0]['owner']['profile_image']); --}}
+
+            <div class="container">
+              <div class="card-body mx-4">
+                @if(isset($stackExchangeQuestions))
+                  <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      @foreach($stackExchangeQuestions ?? [] as $question)
+                        <form action="{{ route('storeHistory') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="user_id" value="{{ $user_id }}">
+                            <input type="hidden" name="url" value="{{$question['link']}}"/>
+                            <input type="hidden" name="title" value="{{ $question['title'] }}"/>
+                          <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
+                              <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
+                              <div class="flex items-center mt-2">
+                              @if(isset($question['owner']['profile_image']))
+                                <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full">
+                              @endif
+                              @if(isset($question['owner']['user_id']))           
+                            <span class="text-sm ml-2">{{ $question['owner']['user_id'] }}{{ $question['owner']['display_name'] }}</span>
+                              @endif
+                              </div>
+                              <h2>{{ $question['title'] }}</h2>
+                              <div class="flex items-center mt-2">
+                                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                                  </svg>
+                                  <span class="text-sm ml-2">{{ date('Y-m-d H:i:s', $question['creation_date']) }}</span>
+                              </div>
+                              </a>
+                              @if(in_array($question['link'],$likes))
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 heart-icon fill-pink-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                            </svg>
+ 
+                              @else
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 heart-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                            </svg>
+                               
+                              @endif
+                          </li> 
+                        </form>
+                      @endforeach
+                  </ul>
+                  @else
+                  <p>stack exchangeには該当する投稿がありません。</p>
+                  @endif
+              </div>
+            </div>
+
+            @if(isset($stackExchangeQuestions))
+            <div class="mt-4">
+                <div class="flex items-center justify-center">
+                    <div class="flex">
+                        {{ $stackExchangeQuestions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <div class="container">
               <div class="card-body mx-4">
                   <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

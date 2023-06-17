@@ -8,6 +8,7 @@ use App\Http\Controllers\KnowlegeController;
 use App\Http\Controllers\UserPageController;
 use App\Http\Controllers\SuggestController;
 use App\Http\Controllers\ProblemReplyController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -83,9 +84,11 @@ Route::get('/suggest', [SuggestController::class, 'suggest'])->name('suggest');
 
 Route::post('/reply/{id}', [ProblemReplyController::class, 'Reply'])->name('reply');
 
-// FavoriteProblemController
+// FavoriteController
 
-//Route::get('/fav/{user_id}', [FavoriteController::class 'index'])->name('fav.index');
+Route::middleware('auth')->group(function () {
+    Route::get('/fav/{user_id}', [FavoriteController::class, 'index'])->name('fav.index');
+});
 
 //Delete
 

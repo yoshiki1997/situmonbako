@@ -99,6 +99,12 @@ class PostController extends Controller{
         $qittaposts = $Pagenator->QittaPagenator($qittaposts);
         //$qittaposts = $Pagenator->youtubePagenator()
 
+        //Stack Exchange API
+        $stackExchangeClient = new StackExchangeGetAPI();
+        $stackExchangeQuestions = $stackExchangeClient->fetchNoKeywordQuestionsStackExchange();
+        $stackExchangeQuestions = $Pagenator->stackExchangePagenator($stackExchangeQuestions);
+
+
         
         $rankings = Like::select('*', \DB::raw('count(*) as count'))
             ->groupBy('url')
@@ -106,7 +112,7 @@ class PostController extends Controller{
             ->get();
            
         $rankings = $rankings->toArray();//dd($rankings);
-        $rankings = $Pagenator->QittaPagenator($rankings);
+        $rankings = $Pagenator->RankingsPagenator($rankings);
 
 
         // 使用者のユーザーID
@@ -121,11 +127,28 @@ class PostController extends Controller{
 
         $topKeywords = $this->search_history->getTopKeywords();
 
+        //　ページネーションの設定
+        if($questions){
+            $questions->setPageName('questions_page');
+            }
+            if($data){
+            $data->setPageName('datas_page');
+            }
+            if($qittaposts){
+            $qittaposts->setPageName('qittaposts_page');
+            }
+            if($stackExchangeQuestions){
+            $stackExchangeQuestions->setPageName('stackExchangeQuestions_page');
+            }
+            //dd($questions, $data, $qittaposts, $stackExchangeQuestions);
+
+
         return view('posts.index')->with([
             'questions' => $questions,
             'tags' => $tags['tags'],
             'datas' => $data,
             'qittaposts' => $qittaposts,
+            'stackExchangeQuestions' => $stackExchangeQuestions,
             'rankings' => $rankings,
             'user_id' => $userId,
             'likes' => $likes,
@@ -227,6 +250,12 @@ class PostController extends Controller{
         $qittaposts = $Pagenator->QittaPagenator($qittaposts);
         //$qittaposts = $Pagenator->youtubePagenator()
 
+        //Stack Exchange API
+        $stackExchangeClient = new StackExchangeGetAPI();
+        $stackExchangeQuestions = $stackExchangeClient->fetchQuestionsStackExchange($search);
+        $stackExchangeQuestions = $Pagenator->stackExchangePagenator($stackExchangeQuestions);
+
+
         // 使用者のユーザーID
         if(auth()->check()) {
             $userId = auth()->user()->id;
@@ -239,10 +268,26 @@ class PostController extends Controller{
 
         $topKeywords = $this->search_history->getTopKeywords();
 
+        //　ページネーションの設定
+        if($questions){
+        $questions->setPageName('questions_page');
+        }
+        if($data){
+        $data->setPageName('datas_page');
+        }
+        if($qittaposts){
+        $qittaposts->setPageName('qittaposts_page');
+        }
+        if($stackExchangeQuestions){
+        $stackExchangeQuestions->setPageName('stackExchangeQuestions_page');
+        }
+        //dd($questions, $data, $qittaposts, $stackExchangeQuestions);
+
         return view("posts/search")->with([
             'questions' => $questions,
             'datas' => $data,
             'qittaposts' =>$qittaposts,
+            'stackExchangeQuestions' => $stackExchangeQuestions,
             'user_id' => $userId,
             'likes' => $likes,
             'search' => $search,
