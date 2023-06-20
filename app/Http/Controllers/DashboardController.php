@@ -39,7 +39,7 @@ class DashboardController extends Controller
         $user_id = auth()->user()->id;
         $historys = History::select('id', 'url', 'title', 'comment', 'user_id')->where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
         $likes = Like::select('id', 'url', 'title', 'comment', 'user_id')->where('user_id',$user_id)->get();
-        $problems = Problem::where('user_id',$user_id)->with('problemUrl')->with('categories')->orderBy('priority', 'desc')->get();
+        $problems = Problem::where('user_id',$user_id)->with('problemUrl')->with('categories')->with('reply')->orderBy('priority', 'desc')->orderBy('updated_at', 'desc')->get();
         $images = UserImage::where('user_id', $user_id)->get();
         //$problem_urls = Problem_URL::where('problem_id', $problems->id)->get();
 
@@ -286,25 +286,25 @@ class DashboardController extends Controller
         $categories = array_map('trim', $categories);
 
         foreach($categories as $category){
-            $existCategory = Category::where('category', $category)->first();
-            if($existCategory){
+            $update_problem = Category::where('category', $category)->first();
+            if($update_problem){
                 $updateProblem = Problem::find($id);
-                $existPivot = $updateProblem->categories()->where('category', $existCategory)->exists();
+                $existPivot = $update_problem->categories()->where('category', $existCategory)->exists();
                 if($existPivot){
                     continue;
                 }else{
-                    $updateProblem->categories()->attach($existCategory->id);
+                    $update_problem->categories()->attach($existCategory->id);
                 }
             }else {
-                $updatedProblem = Problem::find($id);
-                $existPivot = $updateProblem->categories()->where('category', $category)->exists();
+                $update_problem = Problem::find($id);
+                $existPivot = $update_problem->categories()->where('category', $category)->exists();
                 if($existPivot){
                     continue;
                 }else{
                     $category = Category::create([
                         'category' => $category,
                     ]);
-                    $updateProblem->categories()->attach($category->id);
+                    $update_problem->categories()->attach($category->id);
                 }
             }
         }

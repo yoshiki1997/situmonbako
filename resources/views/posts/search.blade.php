@@ -93,7 +93,7 @@
             </div>
 
             @if(isset($question))
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
                         {{ $questions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
@@ -160,7 +160,7 @@
             </div>
 
             @if(isset($datas))
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
                         {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
@@ -218,7 +218,7 @@
             </div>
 
             @if(isset($qittaposts))
-            <div class="mt-4">
+            <div class="mt-4  mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
                         {{ $qittaposts->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
@@ -281,7 +281,7 @@
             </div>
 
             @if(isset($stackExchangeQuestions))
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
                         {{ $stackExchangeQuestions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
@@ -330,7 +330,7 @@
             </div>
 
             @if(isset($rankings))
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
                         {{ $rankings->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}

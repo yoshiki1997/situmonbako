@@ -71,6 +71,7 @@ Route::get('/user/{id}', [UserPageController::class, 'index'])->name('user.page'
 
 Route::get('/historia', [KnowlegeController::class, 'index'])->name('historia.index');
 Route::get('/history/search', [KnowlegeController::class, 'search'])->name('history.search');
+Route::get('/historia/category', [KnowlegeController::class, 'searchByCategory'])->name('get.category.problems');
 Route::get('/history/{id}', [KnowlegeController::class, 'pickup'])->name('history.pickup');
 Route::post('/problemlikes', [KnowlegeController::class, 'problemLikes'])->name('problem.likes');
 Route::post('/history/delete/{id}', [KnowlegeController::class, 'destory'])->name('destory.problem.history');

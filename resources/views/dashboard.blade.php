@@ -64,8 +64,26 @@
                                     <option value="1" class="text-black">低</option>
                                     <option value="0" class="text-black">済</option>
                                 </select>
-                                <label for="category" class="mb-2 text-gray-700 dark:text-white">Category:</label>
-                                <input type="text" id="category" name="category" value="{{ $updateproblem->category }}" placeholder="カテゴリーを入れてください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
+
+                                <input type="hidden" id="tagValueUpdate" name="categories">
+                                <label for="category" class="mb-4 ml-4 text-gray-700 dark:text-white">Category:</label>
+                                <input type="text" name="category" id="categoriesUpdate" placeholder="カテゴリーを入れてください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button id="addUpdateCategoryButton" type="button" class="bg-blue-500 text-white px-4 py-2 ml-4 rounded">追加</button><br>
+
+                                <div id="tagContainer_update" class="flex flex-wrap gap-2 mb-2 tagContainer_update">
+                                    Category:
+                                        @if(isset($updateproblem->categories))
+                                        @foreach($updateproblem->categories as $category)
+                                            <span class="bg-blue-500 text-white px-2 py-1 rounded flex">
+                                                <p>{{ $category->category }}</p>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 delete-button" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </span>
+                                        @endforeach
+                                        @endif
+                                </div>
+
                                 <div class="flex flex-col mb-4 mr-9">
                                     <label for="description" class="mb-2 text-gray-700 dark:text-white">詳細:</label>
                                     <div class="relative flex">
@@ -153,22 +171,22 @@
                     </div>
                     <div id="problem-accordion" class="accordion-content">
                     <div class="flex justify-end">
-  <label for="toggle" class="flex items-center cursor-pointer">
-    <div class="relative">
-      <input type="checkbox" id="toggle" class="sr-only">
-      <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
-      <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
-    </div>
-    <div class="ml-3 text-white font-medium">トグル</div>
-  </label>
-</div>
+                    <label for="toggle" class="flex items-center cursor-pointer">
+                        <div class="relative">
+                        <input type="checkbox" id="toggle" class="sr-only">
+                        <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                        <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+                        </div>
+                        <div class="ml-3 text-black dark:text-white font-medium">未達成のみ</div>
+                    </label>
+                    </div>
                         @if(isset($problems))
                             <ul class="mb-16 flex flex-col">
                                 @foreach($problems as $key => $problem)
                                 @php
                                 $id = $key + 1;
                                 @endphp
-                                    <div class="my-2 p-2 border rounded">
+                                    <div class="my-2 p-2 border rounded listContainer">
                                     <li class="mb-2 ml-4 mt-4 flex flex-col justify-between">
                                     <form id="storeform{{ $problem->id }}" class="w-full flex flex-col justify-between" action="{{ route('updateproblem', ['id' => $problem->id]) }}" method="POST">
                                         @csrf
@@ -232,8 +250,14 @@
                                             </div>
 
                                             <div class="flex flex-col">
-                                                <p class="text-black dark:text-white hover:underline mr-4 self-end">{{ $problem->updated_at }}</p>
-                                                <ul class="flex flex-row py-4">
+                                                <p class="text-black dark:text-white hover:underline mr-4 self-end flex-auto">{{ $problem->updated_at }}</p>
+                                                <div class="flex flex-auto justify-center">
+                                                <button id="menu-button" class="bg-transparent border-none cursor-pointer self-center mr-4 menu-button">
+                                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                                    </svg>
+                                                </button>
+                                                <ul class="flex flex-row py-4 hidden menu">
                                                     <li class="mr-4">
                                                         <button type="button" class="bg-purple-500 hover:bg-purple-700 dark:text-white font-bold py-2 px-4 rounded" onclick="openDescription({{ $id }})">
                                                             詳細
@@ -242,6 +266,11 @@
                                                     <li class="mr-4">
                                                         <button type="button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" onclick="URLget({{ $id }})">
                                                             参考URL
+                                                        </button>
+                                                    </li>
+                                                    <li class="mr-4">
+                                                        <button type="button" class="bg-white dark:bg-black hover:bg-opacity-50 text-black dark:text-white font-bold py-2 px-4 rounded" onclick="openReply({{ $id }})">
+                                                            リプライ
                                                         </button>
                                                     </li>
                                                     <li class="mr-4">
@@ -258,9 +287,54 @@
                                                         </form>
                                                     </li>
                                                 </ul>
+                                                </div>
                                             </div>
                                         
                                     </dvi>
+                                    </li>
+                                    <li id="reply_{{$id}}" class="flex justify-center hidden">
+                                        <div class="mx-12">
+                                            @if($problem->reply)
+                                            @foreach($problem->reply as $key2 => $reply )
+                                            @php
+                                                $id2 = $key2 + 1;
+                                            @endphp
+                                            <div class="my-4 border rounded">
+                                                <div class="m-2">
+                                                    <div class="flex justify-between mb-4">
+                                                    <p>{{ $reply->user->name }}</p><p>{{ $reply->created_at }}</p>
+                                                    </div>
+                                                    <div>
+                                                    <p>{{ $reply->body }}</p>
+                                                    </div>
+
+                                                    @if($reply->user_id == Auth::user()->id)
+                                                    <div class="flex justify-between">
+                                                        <form action="{{ route('destory.reply', ['id' => $reply->id]) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit">削除</button>
+                                                        </form>
+                                                        <button type="button" onclick="openPatchReply({{$id2}})">編集</button>
+                                                    </div>
+                                                    @endif
+
+                                                    <div id="replypatch_{{$id2}}" class="hidden">
+                                                        <form action="{{ route('update.reply', ['id' => $reply->id]) }}" method="POST">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <textarea name="body" id="body" cols="20" rows="1" class="text-black border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-16">{{ old('body') }}</textarea>
+                                                            <button type="submit">変更</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-center">
+                                            <p>↓</p>
+                                            </div>
+                                            @endforeach    
+                                            @endif
+                                        </div>
                                     </li>
                                     <li id="description_{{ $id }}" class="mb-2 ml-4 mt-4 flex flex-row items-center justify-between hidden">
                                         @if(isset($problem->description))
@@ -397,7 +471,9 @@
                                     <div class="history flex" data-user-id="{{ $history->user->id }}" data-history-id="{{ $history->id }}">
                                     <form action="{{ route('destroy.history', ['id' => $history->id]) }}" method="POST">
                                         @csrf
-                                        <button id="destroy-history" type="submit" class=" destroy-history bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-4">取り消し</button>
+                                        <button id="destroy-history" type="submit" class=" destroy-history bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-4">
+                                            <i class="fa-solid fa-delete-left fa-2xl mr-2" style="color: #5237b3;"></i>取り消し
+                                        </button>
                                     </form>
                                     <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded " onclick="Comment({{$id}})">コメント</button>
                                     </div>
@@ -437,7 +513,14 @@
                             @if(isset(auth()->user()->following))
                             @foreach(auth()->user()->following as $followingUser)
                                 <li class="mb-2 ml-4 flex justify-between">
-                                    <a href="{{ route('user.page', ['id' => $followingUser->id]) }}" target="_blank">
+                                    <a href="{{ route('user.page', ['id' => $followingUser->id]) }}" target="_blank" class="flex">
+                                        <div id="user_image" class="rounded-full mr-4 h-8 w-8 overflow-hidden">
+                                        @if(isset($followingUser->userImage->icon))
+                                        <img src="/storage/{{ $followingUser->userImage->icon }}" alt="User Icon" class="w-full h-full object-cover">
+                                        @else              
+                                        <img src="{{ asset('images/noimage.jpg') }}" alt="User Icon" class="w-full h-full object-cover">
+                                        @endif
+                                        </div>
                                         <p class="text-blue-500 hover:underline  text-2xl">{{ $followingUser->name }}</p>
                                     </a>
                                     <form action="{{ route('delete', ['user' => $followingUser]) }}" method="POST">
@@ -466,7 +549,14 @@
                             @if(isset(auth()->user()->followers))
                             @foreach(auth()->user()->followers as $followerUser)
                                 <li class="mb-2 ml-4 flex justify-between">
-                                    <a href="{{ route('user.page', ['id' => $followerUser->id]) }}" target="_blank">
+                                    <a href="{{ route('user.page', ['id' => $followerUser->id]) }}" target="_blank" class="flex">
+                                        <div id="user_image" class="rounded-full mr-4 h-8 w-8 overflow-hidden">
+                                        @if(isset($followingUser->userImage->icon))
+                                        <img src="/storage/{{ $followingUser->userImage->icon }}" alt="User Icon" class="w-full h-full object-cover">
+                                        @else              
+                                        <img src="{{ asset('images/noimage.jpg') }}" alt="User Icon" class="w-full h-full object-cover">
+                                        @endif
+                                        </div>
                                         <p class="text-blue-500 hover:underline  text-2xl">{{ $followerUser->name }}</p>
                                     </a>
                                     <form action="{{ route('delete', ['user' => $followerUser]) }}" method="POST">
@@ -515,6 +605,14 @@
             // アコーディオンを開きな
             problemaccordion.style.maxHeight = problemaccordion.scrollHeight + "px";
             problemurlaccordion.classList.toggle("hidden");
+        }
+        function openReply(id) {
+            const accordionUrlForm = document.getElementById("reply_" + id);
+            const problemaccordion = document.getElementById("problem-accordion");
+
+            accordionUrlForm.classList.toggle("hidden");
+            // アコーディオンを開きな
+            problemaccordion.style.maxHeight = problemaccordion.scrollHeight + "px";
         }
         function store(problem_id) {
             const storeform = document.getElementById("storeform" + problem_id);
@@ -587,21 +685,57 @@
         // 初期選択状態での色を適用する
         var selectedOption = selectElement.options[selectElement.selectedIndex];
         var selectedColor = selectedOption.classList[0];
-        selectElement.className = 'text-black rounded-md ' + selectedColor; // クラスを変更して背景色を適用する
+        selectElement.className = 'text-black rounded-md prioritySelect ' + selectedColor; // クラスを変更して背景色を適用する
 
         selectElement.addEventListener('change', function() {
             var selectedOption = selectElement.options[selectElement.selectedIndex];
             var selectedColor = selectedOption.classList[0]; // オプションのクラスから色を取得する
 
-            selectElement.className = 'text-black rounded-md ' + selectedColor; // クラスを変更して背景色を適用する
+            selectElement.className = 'text-black rounded-md prioritySelect ' + selectedColor; // クラスを変更して背景色を適用する
     });
 });
 
 const categoryInput = document.getElementById('categories');
 const categoryInput2 = document.querySelectorAll('.categories');
+const categoryUpdate = document.getElementById('categoriesUpdate');
 const tagContainer = document.getElementById('tagContainer');
 const addCategoryButton = document.getElementById('addCategoryButton');
 const tagValueInput = document.getElementById('tagValue');
+const addUpdateCategoryButton = document.getElementById('addUpdateCategoryButton');
+const tagValueInputUpdate = document.getElementById('tagValueUpdate');
+const tagContainerUpdate = document.getElementById('tagContainer_update')
+
+function createTag3() {
+
+if (categoryUpdate.value.trim() !== '') {
+  const tag = document.createElement('span');
+  const text = document.createElement('p');
+
+  text.textContent = categoryUpdate.value.trim();
+  tag.classList.add('bg-blue-500', 'text-white', 'px-2', 'py-1', 'rounded', 'flex');
+  tag.appendChild(text);
+  tagContainerUpdate.appendChild(tag);
+
+  categoryUpdate.value = '';
+
+  tagValueInputUpdate.value += (tagValueInputUpdate.value !== '' ? ',' : '') + text.textContent;
+
+  const deleteButton = document.createElement('button');
+  tag.appendChild(deleteButton);
+  deleteButton.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  `;
+  deleteButton.classList.add("ml-2", "text-gray-500", "focus:outline-none");
+
+  deleteButton.addEventListener("click", () => {
+    tag.remove();
+  });
+
+}
+
+}
 
 function createTag2(id) {console.log(this);
     const closestCategoryInput = document.getElementById('categories_' + id);
@@ -689,6 +823,12 @@ categoryInput.addEventListener('keyup', function(event) {
 addCategoryButton.addEventListener('click', function() {
   createTag();
 });
+
+if(addUpdateCategoryButton){
+    addUpdateCategoryButton.addEventListener('click', function() {
+        createTag3();
+    });
+}
 
 // 削除ボタンがクリックされたときの処理
 function handleDeleteButtonClick(event) {
@@ -786,8 +926,62 @@ deleteButtons.forEach(button => {
     iconExplanation.classList.add('hidden');
   }
 );
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('toggle').addEventListener('change', function() {
+        const dot = document.querySelector('.dot');
+        const selecters = document.querySelectorAll('.prioritySelect');
+        const Done = [];
+        const NotYet = [];
+        selecters.forEach(function(selecter) {
+            const selectedIndex = selecter.selectedIndex;
+            const selectedValue = selecter.options[selectedIndex].value;
+            if(selectedValue == 0){
+                Done.push(selecter);
+            }else{
+                NotYet.push(selecter);
+            }
+        });
+        if (this.checked) {
+        dot.style.transform = 'translateX(100%)';console.log(Done);
+            if (Done) {
+                Done.forEach(function(element) {
+                    const ListContainer = element.closest('.listContainer');
+                    console.log(ListContainer);
+                    if(ListContainer !== null){
+                        ListContainer.classList.add('hidden');
+                    }
+                });
+            }
+        } else {
+        dot.style.transform = 'translateX(0)';
+            if (Done) {
+                Done.forEach(function(element) {
+                    const ListContainer = element.closest('.listContainer');
+                    if(ListContainer !== null){
+                        ListContainer.classList.remove('hidden');
+                    }
+                });
+            }
+        }
+    });
+});
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var menuButtons = document.querySelectorAll('.menu-button');
+
+  menuButtons.forEach(function(menuButton) {
+    var menu = menuButton.nextElementSibling;
+
+    menuButton.addEventListener('click', function() {
+      menu.classList.toggle('hidden');
+    });
+  });
+});
+
+</script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js">
 //jQuery

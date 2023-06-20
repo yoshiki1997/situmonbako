@@ -104,7 +104,13 @@ class PostController extends Controller{
         $stackExchangeQuestions = $stackExchangeClient->fetchNoKeywordQuestionsStackExchange();
         $stackExchangeQuestions = $Pagenator->stackExchangePagenator($stackExchangeQuestions);
 
+        //Stack GameDev
+        $stackGameDevQuestions = $stackExchangeClient->fetchNokeywordQuestionsGameDevStackExchange();
+        $stackGameDevQuestions = $Pagenator->stackExchangePagenator($stackGameDevQuestions);
 
+        //Stacl Japan
+        $stackOverFlowJa = $stackExchangeClient->fetchNokeywordQuestionsJAStackExchange();
+        $stackOverFlowJa = $Pagenator->stackExchangePagenator($stackOverFlowJa);
         
         $rankings = Like::select('*', \DB::raw('count(*) as count'))
             ->groupBy('url')
@@ -128,7 +134,7 @@ class PostController extends Controller{
         $topKeywords = $this->search_history->getTopKeywords();
 
         //　ページネーションの設定
-        if($questions){
+            if($questions){
             $questions->setPageName('questions_page');
             }
             if($data){
@@ -140,6 +146,15 @@ class PostController extends Controller{
             if($stackExchangeQuestions){
             $stackExchangeQuestions->setPageName('stackExchangeQuestions_page');
             }
+            if($stackGameDevQuestions){
+            $stackGameDevQuestions->setPageName('stackGameDevQuestions_page');
+            }
+            if($stackOverFlowJa){
+            $stackOverFlowJa->setPageName('stackOverFlowJa_page');
+            }
+            if($rankings){
+            $rankings->setPageName('rankings_page');
+            }
             //dd($questions, $data, $qittaposts, $stackExchangeQuestions);
 
 
@@ -149,6 +164,8 @@ class PostController extends Controller{
             'datas' => $data,
             'qittaposts' => $qittaposts,
             'stackExchangeQuestions' => $stackExchangeQuestions,
+            'stackGameDevQuestions' => $stackGameDevQuestions,
+            'stackOverFlowJa' => $stackOverFlowJa,
             'rankings' => $rankings,
             'user_id' => $userId,
             'likes' => $likes,
@@ -192,6 +209,10 @@ class PostController extends Controller{
         }
 
     public function search(Request $request)    {
+
+        $request->validate([
+            'keyword' => 'required',
+        ]);
         
         if(auth()->check())
         {
@@ -255,6 +276,14 @@ class PostController extends Controller{
         $stackExchangeQuestions = $stackExchangeClient->fetchQuestionsStackExchange($search);
         $stackExchangeQuestions = $Pagenator->stackExchangePagenator($stackExchangeQuestions);
 
+        //Stack GameDev
+        $stackGameDevQuestions = $stackExchangeClient->fetchQuestionsStackExchangeGameDev();
+        $stackGameDevQuestions = $Pagenator->stackExchangePagenator($stackGameDevQuestions);
+
+        //Stacl Japan
+        $stackOverFlowJa = $stackExchangeClient->fetchQuestionsStackExchangeJA();
+        $stackOverFlowJa = $Pagenator->stackExchangePagenator($stackOverFlowJa);
+
 
         // 使用者のユーザーID
         if(auth()->check()) {
@@ -288,6 +317,8 @@ class PostController extends Controller{
             'datas' => $data,
             'qittaposts' =>$qittaposts,
             'stackExchangeQuestions' => $stackExchangeQuestions,
+            'stackGameDevQuestions' => $stackGameDevQuestions,
+            'stackOverFlowJa' => $stackOverFlowJa,
             'user_id' => $userId,
             'likes' => $likes,
             'search' => $search,

@@ -9,6 +9,9 @@ use App\Models\ProblemReply;
 use App\Models\History;
 use App\Models\Like;
 use App\Models\User;
+use App\Http\UrlThumbnail\UrlThumbnail;
+
+//require_once('../UrlThumbnail/UrlThumbnail.php');
 
 
 class KnowlegeController extends Controller{
@@ -17,11 +20,20 @@ class KnowlegeController extends Controller{
         $this->problem = new Problem();
         $this->problem_url = new Problem_URL();
         $this->user = new User();
+        $this->urlthumbnail = new UrlThumbnail();
     }
 
     public function index(Problem $problem)
     {
         $problems = $this->problem->latestCreatedAtProblem();
+        foreach($problems as $problem){
+            foreach ($problem->problemUrl as $url) {
+                $result = $this->urlthumbnail->getUrlThumbnail($url->url);
+                $url->title = $result['title'];
+                $url->image = $result['image'];
+                $url->description = $result['description'];
+            }
+        }//dd($problems);
 
         /*$problem_urls = [];
         foreach($problems as $problem)
@@ -114,10 +126,10 @@ class KnowlegeController extends Controller{
         {
             return redirect()->route('login');
         }
-            $historys = History::select('id', 'url', 'title', 'comment')->where('user_id', $user_id)->get();
-        $likes = Like::select('id', 'url', 'title', 'comment')->where('user_id',$user_id)->get();
-        $problems = Problem::where('user_id',$user_id)->with('problemUrl')->get();
-        $updateproblem = Problem::find($id);
+            $historys = History::select('id', 'url', 'title', 'comment', 'user_id')->where('user_id', $user_id)->get();
+        $likes = Like::select('id', 'url', 'title', 'comment', 'user_id')->where('user_id',$user_id)->get();
+        $problems = Problem::where('user_id',$user_id)->with('problemUrl')->with('categories')->get();
+        $updateproblem = Problem::with('problemUrl')->with('categories')->find($id);
 
         return view('dashboard')->with([
             'updateproblem' => $updateproblem,

@@ -32,7 +32,7 @@
                             @if(isset($problem->user->id))
                             <a href="{{ route('user.page', ['id' => $problem->user->id]) }}">
                             @if(isset($problem->user->userImage->icon))
-                            <img src="/storage/{{ auth()->user()->userImage->icon }}" class="w-10 h-10 rounded-full mr-4" alt="Profile Image">
+                            <img src="/storage/{{ $problem->user->userImage->icon }}" class="w-10 h-10 rounded-full mr-4" alt="Profile Image">
                             @else
                             <img src="{{ asset('images/noimage.jpg') }}" class="w-10 h-10 rounded-full mr-4" alt="Profile Image">
                             @endif
@@ -49,9 +49,23 @@
                             <p>{{ $problem->description }}</p>
                             @if($problem->problemUrl)
                             @foreach($problem->problemUrl as $problemUrl)
-                            <a class="text-blue-500 hover:underline">{{ $problemUrl->url }}</a>
+                            <a href="{{ $problemUrl->url }}" class="text-blue-500 hover:underline">
+                                <div class="url-thumbnail">
+                                    <img src="{{ $problemUrl->image }}" alt="サムネイル">
+                                    <h3>{{ $problemUrl->title }}</h3>
+                                    <p>{{ $problemUrl->description }}</p>
+                                </div>{{ $problemUrl->url }}
+                            </a><br>
                             @endforeach
                             @endif
+                            <div class="flex">
+                            <p>Category:<p>
+                            @if($problem->categories)
+                            @foreach($problem->categories as $category)
+                            <a href="{{ route('get.category.problems') }}" class="text-blue-500 hover:underline">{{ $category->category }}</a>
+                            @endforeach
+                            @endif
+                            </div>
                         </div>
                         <div id="reply_{{$id}}" class="hidden mt-2">
                             @if($problem->reply)
@@ -100,7 +114,11 @@
                             @endif
                         </div>
                         <div class="flex justify-end mt-4">
-                            <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md ml-2" onclick="openReply({{$id}})">リプライ</button>
+                            <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md ml-2" onclick="openReply({{$id}})">
+                            <div class="myAnimation">
+                            <i class="fa-regular fa-message" style="color: #db61d7;">リプライ</i>
+                            </div>
+                            </button>
                         
                             <div>
                                 @if(auth()->check())
@@ -186,6 +204,25 @@
     }
 
 </script>
+
+<script>
+// クリックイベントリスナーを追加
+var elements = document.querySelectorAll('.myAnimation');
+elements.forEach(function(element) {
+  element.addEventListener('click', function() {
+    // アニメーションを開始するためのコードをここに追加
+    const fa_message = this.querySelector('.fa-message');
+    fa_message.classList.toggle('fa-bounce');
+
+    // アニメーション後、自動的にトグルするためのタイマーを設定
+    setTimeout(function() {
+      fa_message.classList.toggle('fa-bounce');
+    }, 1000); // 1000ミリ秒後にトグルする例（1秒後にトグル）
+  });
+});
+
+</script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js">
 //jQuery
 $(function(){
