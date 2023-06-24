@@ -2,6 +2,7 @@
     
     <x-slot name="header">
         <a href="/"><h1 class="text-2xl font-bold">{{ __('質問一覧') }}</h1></a>
+        @include('layouts.indexnavigation')
     </x-slot>
     <div class="flex justify-center">
         <div class="w-8/12">
@@ -9,7 +10,7 @@
 
             <div class="searchbox mb-4">
                 <form action="/search" method="GET">
-                    @csrf
+                @csrf
                     <input type="text" id="keyword-input" name="keyword" placeholder="キーワードを入れてください" class="p-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-black" />
                     <br/>
                     <ul id="topkeyword-list" class="hidden bg-white border border-gray-300 rounded-lg shadow-md py-2 px-3 text-black w-1/2 max-h-40 overflow-y-auto mb-4"></ul>
@@ -36,48 +37,44 @@
                 </form>
             </div>
 
+            <div id="teratail-content" class="content hidden">
 
             <div class="container">
-              <div class="card-body mx-4">
-                  <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      @foreach($questions ?? [] as $question)
-                        <form action="{{ route('storeHistory') }}" method="POST">
+                <div class="card-body mx-4">
+                    <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($questions ?? [] as $question)
+                            <form action="{{ route('storeHistory') }}" method="POST">
                             @csrf
-                            <input type="hidden" name="user_id" value="{{ $user_id }}">
-                            <input type="hidden" name="url" value="https://teratail.com/questions/{{$question['id']}}"/>
-                            <input type="hidden" name="title" value="{{$question['title']}}"/>
-                            <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 hover:text-gray-200 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
-                              <a href="https://teratail.com/questions/{{$question['id']}}" target="_blank" class="hover:text-gray-200 font-semibold dark:hover:text-black" onclick="this.closest('form').submit();">
-                              <h2>{{ $question['title'] }}</h2>
-                              <div class="flex items-center mt-2">
-                                  <!-- <img src="{{ $question['user']['photo'] }}" alt="User Avatar" class="w-6 h-6 rounded-full"> -->
-                                  <span class="text-sm ml-2">{{ $question['user']['display_name'] }}</span>
-                              </div>
-                              <div class="flex items-center mt-2">
-                                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                                  </svg>
-                                  <span class="text-sm ml-2">{{ $question['created'] }}</span>
-                              </div>
-                              </a>
-                              
-                              @if(in_array("https://teratail.com/questions/" . $question['id'],$likes))
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 heart-icon fill-pink-500" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                            </svg>
- 
-                              @else
-                              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 heart-icon" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                            </svg>
-                               
-                              @endif
-            
-                            
-                          </li>
-                        
-                        </form>
-                        
+                                <input type="hidden" name="user_id" value="{{ $user_id }}"/>
+                                <input type="hidden" name="url" value="https://teratail.com/questions/{{$question['id']}}"/>
+                                <input type="hidden" name="title" value="{{$question['title']}}"/>
+                                <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 hover:text-gray-200 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
+                                    <a href="https://teratail.com/questions/{{$question['id']}}" target="_blank" class="hover:text-gray-200 font-semibold dark:hover:text-black" onclick="this.closest('form').submit();">
+                                    <div class="flex items-center mt-2">
+                                        <!-- <img src="{{ $question['user']['photo'] }}" alt="User Avatar" class="w-6 h-6 rounded-full"> -->
+                                        <span class="text-sm ml-2">{{ $question['user']['display_name'] }}</span>
+                                    </div>
+                                    <h2 class="my-6 font-semibold text-base h-[3em] overflow-hidden">{{ $question['title'] }}</h2>
+                                    <div class="flex items-center mt-2">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                                        </svg>
+                                        <span class="text-sm ml-2">{{ $question['created'] }}</span>
+                                    </div>
+                                    </a>
+
+                                    @if(in_array("https://teratail.com/questions/" . $question['id'],$likes))
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 heart-icon fill-pink-500" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 heart-icon" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    @endif
+                                </li>
+                            </form>
+                                      
                       @endforeach
                   </ul>
               </div>
@@ -86,14 +83,14 @@
             <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $questions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg text-white']) }}
+                        {{ $questions->links('pagination::tailwindmydesign')->with(['class' => 'hover:shadow-lg text-white']) }}
                     </div>
                 </div>
             </div>
 
+            </div>
 
-
-
+            <div id="youtube-content" class="content hidden">
 
             <div class="container">
                 <div class="card-body mx-4">
@@ -118,9 +115,9 @@
                             </div>
                         </div>
 
-                            <h2>{{ $data['snippet']['title'] }}</h2>
-                            <p>{{ $data['snippet']['description'] }}</p>
-                            <h2>https://www.youtube.com/watch?v={{ $data['id']['videoId'] }}</h2>
+                            <h2 class="h-[3em] overflow-hidden my-6 font-semibold text-base">{{ $data['snippet']['title'] }}</h2>
+                            <p class="h-[6em] overflow-hidden">{{ $data['snippet']['description'] }}</p>
+                            <h2 class="h-[3em] overflow-hidden">https://www.youtube.com/watch?v={{ $data['id']['videoId'] }}</h2>
                             
                             {{-- <div>
                             <img src="{{ $data['snippet']['thumbnails']['default']['url'] }}" alt="Video Thumbnail">
@@ -147,14 +144,14 @@
             <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $datas->links('pagination::tailwindmydesign')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>
 
+            </div>
 
-
-
+            <div id="qitta-content" class="content hidden">
 
             <div class="container">
               <div class="card-body mx-4">
@@ -168,10 +165,11 @@
                           <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
                               <a href="{{$qittapost['url']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
                               <div class="flex items-center mt-2">
-                                  <img src="{{ $qittapost['user']['profile_image_url'] }}" alt="User Avatar" class="w-6 h-6 rounded-full">
+                                  <img src="{{ $qittapost['user']['profile_image_url'] }}" alt="User Avatar" class="w-6 h-6 rounded-full" onerror="this.onerror=null; this.src='/images/noimage.jpg'">
                                   <span class="text-sm ml-2">{{ $qittapost['user']['id'] }}</span>
                               </div>
-                              <h2>{{ $qittapost['title'] }}</h2>
+                              <h2 class="my-6 font-semibold text-base h-[3em] overflow-hidden">{{ $qittapost['title'] }}</h2>
+                              <p class="h-[6em] overflow-hidden">{{ $qittapost['body'] }}</p>
                               <div class="flex items-center mt-2">
                                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
@@ -200,10 +198,14 @@
             <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $qittaposts->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $qittaposts->links('pagination::tailwindmydesign')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>
+
+            </div>
+
+            <div id="stack-overflow-content" class="content hidden">
 
             <!--- StackOverFlow -->
             <div class="container">
@@ -220,13 +222,13 @@
                               <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
                               <div class="flex items-center mt-2">
                               @if(isset($question['owner']['profile_image']))
-                                <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full">
+                                <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full" onerror="this.onerror=null; this.src='/images/noimage.jpg'">
                               @endif
                               @if(isset($question['owner']['user_id']))           
-                            <span class="text-sm ml-2">{{ $question['owner']['user_id'] }}{{ $question['owner']['display_name'] }}</span>
+                                <span class="text-sm ml-2">{{ $question['owner']['user_id'] }}{{ $question['owner']['display_name'] }}</span>
                               @endif
                               </div>
-                              <h2>{{ $question['title'] }}</h2>
+                              <h2 class="my-6 font-semibold h-[3em] overflow-hidden">{{ $question['title'] }}</h2>
                               <div class="flex items-center mt-2">
                                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
@@ -259,11 +261,15 @@
             <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $stackExchangeQuestions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $stackExchangeQuestions->links('pagination::tailwindmydesign')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>
             @endif
+
+            </div>
+
+            <div id="stack-exchange-gamedev-content" class="content hidden">
 
             <!-- Stack Exchange GameDev -->
             <div class="container">
@@ -280,13 +286,13 @@
                               <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
                               <div class="flex items-center mt-2">
                               @if(isset($question['owner']['profile_image']))
-                                <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full">
+                                <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full" onerror="this.onerror=null; this.src='/images/noimage.jpg'">
                               @endif
                               @if(isset($question['owner']['user_id']))           
                             <span class="text-sm ml-2">{{ $question['owner']['user_id'] }}{{ $question['owner']['display_name'] }}</span>
                               @endif
                               </div>
-                              <h2>{{ $question['title'] }}</h2>
+                              <h2 class="my-6 font-semibold h-[3em] overflow-hidden">{{ $question['title'] }}</h2>
                               <div class="flex items-center mt-2">
                                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
@@ -319,11 +325,15 @@
             <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $stackGameDevQuestions->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $stackGameDevQuestions->links('pagination::tailwindmydesign')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>
             @endif
+
+            </div>
+
+            <div id="stack-overflow-ja-content" class="content">
 
             <!-- StackOverFlowJa-->
 
@@ -341,13 +351,13 @@
                               <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
                               <div class="flex items-center mt-2">
                               @if(isset($question['owner']['profile_image']))
-                                <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full">
+                                <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full" onerror="this.onerror=null; this.src='/images/noimage.jpg'">
                               @endif
                               @if(isset($question['owner']['user_id']))           
                             <span class="text-sm ml-2">{{ $question['owner']['user_id'] }}{{ $question['owner']['display_name'] }}</span>
                               @endif
                               </div>
-                              <h2>{{ $question['title'] }}</h2>
+                              <h2 class="my-6 font-semibold h-[3em] overflow-hidden">{{ $question['title'] }}</h2>
                               <div class="flex items-center mt-2">
                                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
@@ -380,11 +390,15 @@
             <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $stackOverFlowJa->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $stackOverFlowJa->links('pagination::tailwindmydesign')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>
             @endif
+
+            </div>
+
+            <div id="ranking-content" class="content hidden">
 
             <div class="container">
               <div class="card-body mx-4">
@@ -399,7 +413,7 @@
                               <a href="{{$ranking['url']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
                               <div class="flex items-center mt-2">
                               </div>
-                              <h2>{{ $ranking['title'] }}</h2>
+                              <h2 class="my-6 font-semibold h-[3em] overflow-hidden">{{ $ranking['title'] }}</h2>
                               <div class="flex items-center mt-2">
                                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
@@ -428,13 +442,17 @@
             <div class="mt-4 mb-4">
                 <div class="flex items-center justify-center">
                     <div class="flex">
-                        {{ $datas->links('pagination::tailwind')->with(['class' => 'hover:shadow-lg']) }}
+                        {{ $rankings->links('pagination::tailwindmydesign')->with(['class' => 'hover:shadow-lg']) }}
                     </div>
                 </div>
             </div>
+            
+            </div>
+
         </div>
     </div>
 </x-app-layout>
+<script src="{{ asset('js/app.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const heartIcons = document.querySelectorAll('.heart-icon');

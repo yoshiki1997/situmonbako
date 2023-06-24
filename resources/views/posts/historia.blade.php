@@ -47,17 +47,28 @@
                         <div class="mx-8">
                             <p class="text-xl mt-2 mb-2">{{ $problem->title }}</p>
                             <p>{{ $problem->description }}</p>
+                            <div class="w-full max-h-64 overflow-y-scroll overflow-x-hidden">
                             @if($problem->problemUrl)
                             @foreach($problem->problemUrl as $problemUrl)
                             <a href="{{ $problemUrl->url }}" class="text-blue-500 hover:underline">
                                 <div class="url-thumbnail">
-                                    <img src="{{ $problemUrl->image }}" alt="サムネイル">
-                                    <h3>{{ $problemUrl->title }}</h3>
-                                    <p>{{ $problemUrl->description }}</p>
-                                </div>{{ $problemUrl->url }}
+                                    @if(isset($problemUrl->image))
+                                    <img class="object-cover w-full h-64" src="{{ $problemUrl->image }}" alt="サムネイル">
+                                    @endif
+                                    @if(isset($problemUrl->title))
+                                    <h3 class="h-[3em] overflow-hidden">{{ $problemUrl->title }}</h3>
+                                    @endif
+                                    @if(isset($problemUrl->description))
+                                    <p class="h-[3em] overflow-hidden">{{ $problemUrl->description }}</p>
+                                    @endif
+                                </div>
+                                <div>
+                                    <p>{{ $problemUrl->url }}</p>
+                                </div>
                             </a><br>
                             @endforeach
                             @endif
+                            </div>
                             <div class="flex">
                             <p>Category:<p>
                             @if($problem->categories)
@@ -145,7 +156,7 @@
                 @if(isset($problems))
                 <div class="flex justify-center">
                     <nav class="pagination flex dark:text-white">
-                        {{ $problems->links('pagination::tailwind') }}
+                        {{ $problems->links('pagination::tailwindmydesign') }}
                     </nav>
                 </div>
                 @endif

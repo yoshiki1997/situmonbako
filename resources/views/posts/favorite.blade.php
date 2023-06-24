@@ -127,7 +127,7 @@
                 @if(isset($problems))
                 <div class="flex justify-center">
                     <nav class="pagination flex dark:text-white">
-                        {{ $problems->links('pagination::tailwind') }}
+                        {{ $problems->links('pagination::tailwindmydesign') }}
                     </nav>
                 </div>
                 @endif

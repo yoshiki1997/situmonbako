@@ -277,11 +277,11 @@ class PostController extends Controller{
         $stackExchangeQuestions = $Pagenator->stackExchangePagenator($stackExchangeQuestions);
 
         //Stack GameDev
-        $stackGameDevQuestions = $stackExchangeClient->fetchQuestionsStackExchangeGameDev();
+        $stackGameDevQuestions = $stackExchangeClient->fetchQuestionsStackExchangeGameDev($search);
         $stackGameDevQuestions = $Pagenator->stackExchangePagenator($stackGameDevQuestions);
 
         //Stacl Japan
-        $stackOverFlowJa = $stackExchangeClient->fetchQuestionsStackExchangeJA();
+        $stackOverFlowJa = $stackExchangeClient->fetchQuestionsStackExchangeJA($search);
         $stackOverFlowJa = $Pagenator->stackExchangePagenator($stackOverFlowJa);
 
 

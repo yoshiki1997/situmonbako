@@ -3,6 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Dashboard') }}
         </h2>
+        @include('layouts.dashboardheader')
     </x-slot>
 
     <div id="profile" class="w-64 h-64 bg-gyra-700 border border-black rounded-md flex flex-col justify-center items-center m-auto">
@@ -48,7 +49,7 @@
 
 
 
-
+                <div id="update-content" class="content">
                     @if(isset($updateproblem))
                     <p class="text-center text-3xl font-bold italic mb-2">困ったことリスト変更フォーム</p>
                     <div id="updateproblemform" class="w-7/12 mb-3 mx-auto border border-black rounded bg-gray-600">
@@ -111,6 +112,9 @@
                         </form>
                     </div>
                     @endif
+                </div>
+
+                <div id="favorite-content" class="content hidden">
 
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -161,7 +165,11 @@
             </div>
         </div>
     </div>
+
+</div>
     
+<div id="problems-content" class="content">
+
         <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -450,6 +458,10 @@
         </div>
     </div>
 
+    </div>
+
+    <div id="history-content" class="content hidden">
+
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -500,6 +512,10 @@
             </div>
         </div>
     </div>
+
+    </div>
+
+    <div id="following-content" class="content hidden">
 
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -572,8 +588,12 @@
             </div>
         </div>
     </div>
+
+    </div>
     
 </x-app-layout>
+
+<script src="{{ asset('js/dashboardswitch.js') }}"></script>
 
 <script>
         function toggleAccordion(element) {
