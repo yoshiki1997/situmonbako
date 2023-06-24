@@ -10,6 +10,8 @@ use App\Models\History;
 use App\Models\Like;
 use App\Models\User;
 use App\Http\UrlThumbnail\UrlThumbnail;
+use League\Csv\Reader;
+
 
 //require_once('../UrlThumbnail/UrlThumbnail.php');
 
@@ -49,11 +51,18 @@ class KnowlegeController extends Controller{
         }
 
         $replies = $problem->reply();
+
+        // csv処理
+        $csv = Reader::createFromPath(storage_path('app/amazon.csv'), 'r');
+        $csv->setHeaderOffset(0); // ヘッダー行をスキップする場合はコメントアウト
+
+        $records = $csv->getRecords();//dd($records);
         
         return view('posts.historia')->with([
             'problems' => $problems,
             //'problem_urls' => $problem_urls,
             'userProblemLikes' => $userProblemLikes,
+            'records' => $records,
         ]);
     }
 
@@ -102,10 +111,17 @@ class KnowlegeController extends Controller{
         } else {
             $userProblemLikes = null;
         }
+
+        // csv処理
+        $csv = Reader::createFromPath(storage_path('app/amazon.csv'), 'r');
+        $csv->setHeaderOffset(0); // ヘッダー行をスキップする場合はコメントアウト
+
+        $records = $csv->getRecords();dd($records);
         
         return view('posts.historia')->with([
             'problems' => $problems,
             'userProblemLikes' => $userProblemLikes,
+            'records' => $records,
         ]);
     }
 

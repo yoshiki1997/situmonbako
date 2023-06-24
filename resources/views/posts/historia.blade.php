@@ -10,6 +10,13 @@
         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md ml-8">検索</button>
         </form>
     </div>
+
+    <div id="content" class="content flex flex-row-reverse flex-gap-0">
+
+    <div class="w-full">
+    @include('layouts.amazon')
+    </div>
+
     <div class="flex justify-center items-start bg-gray-100 dark:bg-gray-700">
         <div class="max-w-xl w-full mx-auto px-4 py-8">
             <div id="problemtweets" class="space-y-4">
@@ -164,6 +171,7 @@
         </div>
         <div class="w-64">
         
+        </div>
         </div>
     </div>
 
