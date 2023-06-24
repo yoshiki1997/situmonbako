@@ -20,7 +20,11 @@
                 @foreach ($records as $record)
                     <a href="{{ $record['product_url'] }}" class="flex">
                         <tr>
-                            <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400"><img src="{{ $record['画像URL'] }}" alt="{{ $record['title'] }}" /></td>
+                            <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">
+                                <div class="h-16 flex justify-center items-center">
+                                    <img src="{{ $record['画像URL'] }}" alt="{{ $record['title'] }}"  class="object-contain h-16 w-full"/>
+                                </div>    
+                            </td>
                             <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">{{ $record['title'] }}</td>
                             <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">{{ $record['auther1'] }}{{ $record['auther2'] }}{{ $record['otherauther'] }}</td>
                             <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">{{ $record['price'] }}{{ $record['points'] }}</td>
