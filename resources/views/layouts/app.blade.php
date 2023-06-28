@@ -38,5 +38,25 @@
                 {{ $slot ?? '' }}
             </main>
         </div>
+        <footer class="bg-white dark:bg-gray-800 shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class=" w-full h-full flex justify-between">
+                    <div class="container mx-auto px-4">
+                        <div class="flex flex-wrap justify-between items-center">
+                        <div class="w-full sm:w-auto mb-4 sm:mb-0">
+                            <p>&copy; 2023 Your Website. All rights reserved.</p>
+                        </div>
+                        <div class="w-full sm:w-auto">
+                            <ul class="flex space-x-4">
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Services</a></li>
+                            <li><a href="#">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </body>
 </html>

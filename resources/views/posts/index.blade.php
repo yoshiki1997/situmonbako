@@ -450,6 +450,8 @@
             </div>
 
         </div>
+        @include('layouts.jumpbutton')
+
     </div>
 </x-app-layout>
 <script src="{{ asset('js/app.js') }}"></script>

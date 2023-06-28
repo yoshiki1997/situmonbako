@@ -74,6 +74,8 @@ class KnowlegeController extends Controller{
 
         $keyword = $request->input('keyword');
 
+        $category = $request->input('category');
+
         $query = Problem::query();
 
         $problems = null; // 変数を初期化
@@ -99,6 +101,10 @@ class KnowlegeController extends Controller{
              $problems = $query->with('problemUrl')->paginate(10);
         }
 
+        if($category){
+            $problems = Problem::with('categories')->where('category', $category)->orderBy('create_at', 'desc')->get();
+        }
+
         /*$problems = Problem::where('title', 'like', '%' . $keyword . '%')
                     ->orWhere('description', 'like', '%' . $keyword . '%')
                     ->with('problemUrl')
@@ -116,7 +122,7 @@ class KnowlegeController extends Controller{
         $csv = Reader::createFromPath(storage_path('app/amazon.csv'), 'r');
         $csv->setHeaderOffset(0); // ヘッダー行をスキップする場合はコメントアウト
 
-        $records = $csv->getRecords();dd($records);
+        $records = $csv->getRecords();//dd($records);
         
         return view('posts.historia')->with([
             'problems' => $problems,

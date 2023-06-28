@@ -4,12 +4,12 @@ use App\Models\SearchHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class SearchHistory {
+class SearchHistoryQuery {
 
-    public function __construct()
+    /*public function __construct()
     {
 
-    }
+    }*/
 
 public function search(Request $request)
 {

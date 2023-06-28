@@ -10,6 +10,16 @@
         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md ml-8">検索</button>
         </form>
     </div>
+
+    <div id="content" class="content flex flex-row-reverse justify-center flex-gap-4 w-screen mx-auto">
+            
+
+        <div class="w-1/5 ">
+        <div id="bookranking" class="sticky top-20">
+        @include('layouts.amazon')
+        </div>
+        </div>
+
     <div class="flex justify-center items-start bg-gray-100 dark:bg-gray-700">
         <div class="max-w-xl w-full mx-auto px-4 py-8">
             <div id="problemtweets" class="space-y-4">
@@ -41,7 +51,7 @@
                             @endif
                             <p class="text-gray-600 dark:text-black px-8 ml-auto">{{ $problem->created_at->diffForHumans() }}</p>
                             <a href="{{ route('history.pickup',['id' => $problem->id]) }}">
-                                <button type="button">編集</button>
+                                <button type="button"><i class="fa-regular fa-pen-to-square fa-xl bg-gray-400 dark:bg-[#ffffff]"></i>編集</button>
                             </a>
                         </div>
                         <div class="mx-8">
@@ -70,9 +80,9 @@
                                 <form action="{{ route('destory.reply', ['id' => $reply->id]) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit">削除</button>
+                                    <button type="submit"><i class="fa-regular fa-square-minus fa-lg bg-current"></i>削除</button>
                                 </form>
-                                <button type="button" onclick="openPatchReply({{$id2}})">編集</button>
+                                <button type="button" onclick="openPatchReply({{$id2}})"><i class="fa-regular fa-pen-to-square fa-xl bg-gray-400 dark:bg-[#ffffff]"></i>編集</button>
                                 </div>
 
                                 <div id="replypatch_{{$id2}}" class="hidden">
@@ -100,7 +110,7 @@
                             @endif
                         </div>
                         <div class="flex justify-end mt-4">
-                            <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md ml-2" onclick="openReply({{$id}})">リプライ</button>
+                            <button class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md ml-2" onclick="openReply({{$id}})"><div class="myAnimation"><i class="fa-regular fa-message" style="color: #db61d7;">リプライ</i></div></button>
                         
                             <div>
                                 @if(auth()->check())
@@ -133,10 +143,10 @@
                 @endif
             </div>
         </div>
-        <div class="w-64">
-        
-        </div>
     </div>
+    @include('layouts.jumpbutton')
+
+</div>
 
 </x-app-layout>
 <script>

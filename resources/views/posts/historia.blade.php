@@ -5,19 +5,32 @@
     </x-slot>
 
     <div class="flex justify-center">
-        <form action="{{ route('history.search') }}" method="GET" class="w-full flex justify-center">
-        <input type="text" name="keyword" class="w-7/12 text-black" placeholder="キーワードを入力してください">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md ml-8">検索</button>
+        <form action="{{ route('history.search') }}" method="GET" class="w-full flex flex-col justify-center">
+            <div class="relative flex justify-center">
+            <input type="text" name="keyword" class="w-7/12 text-black rounded-md" placeholder="キーワードを入力してください">
+            <div class="flex justify-end">
+            <button type="submit" class="absolute text-white px-4 py-2 rounded-md ml-8">
+                <i class="fa-brands fa-searchengin" style="color: #df32e2;">{{ __('検索') }}</i>
+            </button>
+            </div>
+            </div>
+            <div class="flex justify-center mt-4">
+                <div class=" w-7/12 justify-start">
+                    <input type="text" name="category" class=" w-52 text-black rounded-md" default="false" placeholder="categoryを入力してください"/>
+                </div>
+            </div>
         </form>
     </div>
 
-    <div id="content" class="content flex flex-row-reverse flex-gap-0">
+    <div id="content" class="content flex flex-row-reverse justify-center flex-gap-4 w-screen mx-auto">
 
-    <div class="w-full">
+    <div class="w-1/5 ">
+    <div id="bookranking" class="sticky top-20">
     @include('layouts.amazon')
     </div>
+    </div>
 
-    <div class="flex justify-center items-start bg-gray-100 dark:bg-gray-700">
+    <div class="flex justify-centerd bg-gray-100 dark:bg-gray-700">
         <div class="max-w-xl w-full mx-auto px-4 py-8">
             <div id="problemtweets" class="space-y-4">
 
@@ -48,13 +61,14 @@
                             @endif
                             <p class="text-gray-600 dark:text-black px-8 ml-auto">{{ $problem->created_at->diffForHumans() }}</p>
                             <a href="{{ route('history.pickup',['id' => $problem->id]) }}">
-                                <button type="button">編集</button>
+                                <button type="button"><i class="fa-regular fa-pen-to-square fa-xl bg-gray-400 dark:bg-[#ffffff]"></i>編集</button>
                             </a>
                         </div>
                         <div class="mx-8">
                             <p class="text-xl mt-2 mb-2">{{ $problem->title }}</p>
                             <p>{{ $problem->description }}</p>
-                            <div class="w-full max-h-64 overflow-y-scroll overflow-x-hidden">
+                            <div class=" overflow-hidden rounded-xl">d
+                            <div class=" w-full max-h-64 overflow-y-scroll overflow-hidden rounded-xl">
                             @if($problem->problemUrl)
                             @foreach($problem->problemUrl as $problemUrl)
                             <a href="{{ $problemUrl->url }}" class="text-blue-500 hover:underline">
@@ -75,6 +89,7 @@
                             </a><br>
                             @endforeach
                             @endif
+                            </div>
                             </div>
                             <div class="flex">
                             <p>Category:<p>
@@ -102,9 +117,9 @@
                                 <form action="{{ route('destory.reply', ['id' => $reply->id]) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit">削除</button>
+                                    <button type="submit"><i class="fa-regular fa-square-minus fa-lg" style="color: #ffea00;"></i>削除</button>
                                 </form>
-                                <button type="button" onclick="openPatchReply({{$id2}})">編集</button>
+                                <button type="button" onclick="openPatchReply({{$id2}})"><i class="fa-regular fa-pen-to-square fa-xl bg-gray-400 dark:bg-[#ffffff]"></i>編集</button>
                                 </div>
 
                                 <div id="replypatch_{{$id2}}" class="hidden">
@@ -169,11 +184,13 @@
                 @endif
             </div>
         </div>
-        <div class="w-64">
+        {{--<div class="w-64">
         
-        </div>
+        </div>--}}
         </div>
     </div>
+    @include('layouts.jumpbutton')
+
 
 </x-app-layout>
 <script>

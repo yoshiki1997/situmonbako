@@ -95,7 +95,7 @@
                                 </div>
 
                                 <div class="flex flex-col mb-4 mr-9">
-                                    <label for="problem_url" class="mb-2 text-gray-700 dark:text-white">参考ULR:</label>
+                                    <label for="problem_url" class="mb-2 text-gray-700 dark:text-white"><i class="fa-solid fa-link" style="color: #ed0c90;"></i>参考ULR:</label>
                                     <input type="text" id="problem_url" name="problem_url" placeholder="解決に役立ったURLをコピペして下さい。" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"><br>
                                 </div>
                                 
@@ -268,29 +268,29 @@
                                                 <ul class="flex flex-row py-4 hidden menu">
                                                     <li class="mr-4">
                                                         <button type="button" class="bg-purple-500 hover:bg-purple-700 dark:text-white font-bold py-2 px-4 rounded" onclick="openDescription({{ $id }})">
-                                                            詳細
+                                                            <i class="fa-solid fa-plus fa-lg" style="color: #8902f7;"></i>詳細
                                                         </button>
                                                     </li>
                                                     <li class="mr-4">
                                                         <button type="button" class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded" onclick="URLget({{ $id }})">
-                                                            参考URL
+                                                        <i class="fa-solid fa-link fa-lg" style="color: #ed0c90;"></i>参考URL
                                                         </button>
                                                     </li>
                                                     <li class="mr-4">
                                                         <button type="button" class="bg-white dark:bg-black hover:bg-opacity-50 text-black dark:text-white font-bold py-2 px-4 rounded" onclick="openReply({{ $id }})">
-                                                            リプライ
+                                                        <i class="fa-solid fa-reply-all fa-lg" style="color: #15f978;"></i>リプライ
                                                         </button>
                                                     </li>
                                                     <li class="mr-4">
                                                         <button type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="store({{ $problem->id }})">
-                                                            保存
+                                                        <i class="fa-regular fa-file fa-lg" style="color: #08f7cf;"></i>保存
                                                         </button>
                                                     </li>
                                                     <li>
                                                         <form action="{{ route('destroy.problem',['id' => $problem->id]) }}" method="POST">
                                                             @csrf
                                                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                                削除
+                                                            <i class="fa-regular fa-square-minus fa-lg" style="color: #ffea00;"></i>削除
                                                             </button>
                                                         </form>
                                                     </li>
@@ -370,7 +370,7 @@
                                             <div class="flex flex-col mb-4 mr-9 ">
                                                 <form action="{{ Route('problem.url.store') }}" method="POST">
                                                 @csrf
-                                                    <label for="problem_url" class="mb-2 text-gray-700 dark:text-white">参考ULR:</label>
+                                                    <label for="problem_url" class="mb-2 text-gray-700 dark:text-white"><i class="fa-solid fa-link" style="color: #ed0c90;"></i>参考ULR:</label>
                                                     <div class="flex flex-row">
                                                     <input class="hidden" name="problem_id" value="{{ $problem->id }}">
                                                     <input type="text" id="problem_url" name="problem_url" placeholder="解決に役立ったURLをコピペして下さい。" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"><br>
