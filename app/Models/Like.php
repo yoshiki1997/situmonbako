@@ -11,6 +11,20 @@ class Like extends Model
 
     protected $fillable = [
         'user_id',
+        'title',
         'url',
+        'comment',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function updateComment($request, $like) {
+        $result = $like->fill([
+            'comment' => $request->like_comment,
+        ])->save();
+
+        return $result;
+    }
 }

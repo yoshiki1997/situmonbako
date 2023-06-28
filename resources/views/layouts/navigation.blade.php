@@ -26,14 +26,34 @@
 
                 <!-- Index Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('index')" :active="request()->routeIs('index')">
-                        {{ __('質問投稿') }}
+                    <x-nav-link :href="route('historia.index')" :active="request()->routeIs('historia.index')">
+                        {{ __('困ったことリスト') }}
                     </x-nav-link>
+                </div>
+
+                <!-- Index Links -->
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    @if(Auth::check())
+                    <x-nav-link :href="route('fav.index', ['user_id' => auth()->user()->id])" :active="request()->routeIs('fav.index')">
+                        {{ __('お気に入りリスト') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
+            
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
+                @if(isset(auth()->user()->userImage->icon))
+                <div class="rounded-full h-8 w-8 overflow-hidden object-cover">
+                    <img src="/storage/{{ auth()->user()->userImage->icon }}" alt="myicon" />
+                </div>
+                @else
+                <div class="rounded-full h-8 w-8 overflow-hidden object-cover">
+                    <img src="{{ asset('images/noimage.jpg') }}" alt="myicon" />
+                </div>
+                @endif
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
@@ -67,6 +87,9 @@
                         @else
                         <x-dropdown-link :href="route('login')">
                                 {{ __('Log in') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('register')">
+                                {{ __('register') }}
                         </x-dropdown-link>
                         @endif
                     </x-slot>

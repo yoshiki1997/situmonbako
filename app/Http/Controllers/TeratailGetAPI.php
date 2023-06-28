@@ -23,7 +23,7 @@ class TeratailGetAPI {
     
         // リクエスト送信と返却データの取得
         // Bearerトークンにアクセストークンを指定して認証を行う
-        $response = $client->request(
+        $response = $this->client->request(
             'GET',
             $url,
             [
@@ -41,16 +41,16 @@ class TeratailGetAPI {
         // PHPファイルに対応した連想配列にデコードする
         $questions = json_decode($response->getBody(), true);
 
-        return $questions
+        return $questions;
     }
 
 
-    public function TeratailGetTags{
+    public function TeratailGetTags(){
     $url_tags = 'https://teratail.com/api/v1/tags';
 
     
         //続いてトークン承認を記述
-        $response_tags = $client->request(
+        $response_tags = $this->client->request(
             'GET',
             $url_tags,
             [
@@ -63,6 +63,6 @@ class TeratailGetAPI {
         //タグのデコード
         $tags = json_decode($response_tags->getBody(), true);
 
-        $return $tags
+        return $tags;
     }
 }

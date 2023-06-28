@@ -2,7 +2,6 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    darkMode: 'class',
 
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
@@ -12,6 +11,12 @@ module.exports = {
 
     theme: {
         extend: {
+            colors: {
+                'selecter-high': '#FF69B4',
+                'selecter-middel': '#ffff00',
+                'selecter-low': '#ADFF2F',
+                'selecter-none': '',
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },

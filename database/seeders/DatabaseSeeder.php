@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        \App\Models\Post::factory(50)->create();
+        // \App\Models\Post::factory(50)->create();
+
+        $this->call(UserSeeder::class);
+        $this->call(FollowSeeder::class);
+        $this->call(PostSeeder::class);
     }
 }
