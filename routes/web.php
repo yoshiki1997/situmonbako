@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+URL::forceScheme('https');
+
 Route::get('/', [PostController::class, 'index'])->name('index');
 Route::get('/tagssearch', [PostController::class, 'tagsSearch']);
 

@@ -112,7 +112,7 @@ class PostController extends Controller{
         $stackOverFlowJa = $stackExchangeClient->fetchNokeywordQuestionsJAStackExchange();
         $stackOverFlowJa = $Pagenator->stackExchangePagenator($stackOverFlowJa);
         
-        $rankings = Like::select('*', \DB::raw('count(*) as count'))
+        $rankings = Like::select('url', \DB::raw('count(*) as count'))
             ->groupBy('url')
             ->orderByDesc('count')
             ->get();
