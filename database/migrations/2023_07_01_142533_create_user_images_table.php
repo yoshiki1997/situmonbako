@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('search_historys', function (Blueprint $table) {
-            $table->unsignedInteger('count')->default(0);
-        });
+        Schema::create('user_images', function (Blueprint $table) {
+           $table->id();
+            $table->string('icon')->nullable();
+            $table->timestamps();        });
     }
 
     /**
@@ -25,8 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('search_historys', function (Blueprint $table) {
-            $table->dropColumn('count');
-        });
+        Schema::dropIfExists('user_images');
     }
 };
