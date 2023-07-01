@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('search_historys', function (Blueprint $table) {
-            $table->unsignedInteger('count')->default(0);
+        Schema::create('search_histories_tabld', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('search_historys', function (Blueprint $table) {
-            $table->dropColumn('count');
-        });
+        Schema::dropIfExists('search_histories_tabld');
     }
 };
