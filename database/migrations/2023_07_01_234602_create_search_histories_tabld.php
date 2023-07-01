@@ -13,9 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('search_histories_tabld', function (Blueprint $table) {
-            $table->id();
+        Schema::create('search_histories', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('keyword');
             $table->timestamps();
+            $table->unsignedInteger('count')->default(0);
+            
+            // Foreign key constraint for user_id column
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -26,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('search_histories_tabld');
+        Schema::dropIfExists('search_histories');
     }
 };
