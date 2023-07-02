@@ -405,10 +405,10 @@
 
                                 <label for="priority" class="mb-2 text-gray-700 dark:text-white">優先度:</label>
                                 <select id="prioritySelect" name="priority" class="text-black rounded-md prioritySelect" onchange="updateBackground(this)">
-                                    <option value="3" class="bg-selecter-high" {{ $problem->priority == 3 ? 'selected' : '' }}>高</option>
-                                    <option value="2" class="bg-selecter-middel" {{ $problem->priority == 2 ? 'selected' : '' }}>中</option>
-                                    <option value="1" class="bg-selecter-low" {{ $problem->priority == 1 ? 'selected' : '' }}>低</option>
-                                    <option value="0" class="bg-gray-500" {{ $problem->priority == 0 ? 'selected' : '' }}>済</option>
+                                    <option value="3" class="bg-selecter-high" >高</option>
+                                    <option value="2" class="bg-selecter-middel">中</option>
+                                    <option value="1" class="bg-selecter-low">低</option>
+                                    <option value="0" class="bg-gray-500">済</option>
                                 </select>
 
                                 
