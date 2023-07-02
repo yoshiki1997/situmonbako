@@ -9,7 +9,7 @@ class SearchHistory extends Model
 {
     use HasFactory;
 
-    protected $table = 'search_historys';
+    protected $table = 'search_histories';
 
     // user_idのヌル制限コマンド　ALTER TABLE search_historys MODIFY user_id bigint(20) unsigned NOT NULL;
     // user_idのヌル制限解除コマンド　ALTER TABLE search_historys MODIFY user_id bigint(20) unsigned NULL;
