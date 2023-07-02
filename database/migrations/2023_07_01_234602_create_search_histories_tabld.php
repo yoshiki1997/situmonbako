@@ -13,9 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('user_images', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
-
+        Schema::create('search_histories', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('keyword');
+            $table->timestamps();
+            $table->unsignedInteger('count')->default(0);
+            
+            // Foreign key constraint for user_id column
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
@@ -27,9 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('user_images', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
+        Schema::dropIfExists('search_histories');
     }
 };

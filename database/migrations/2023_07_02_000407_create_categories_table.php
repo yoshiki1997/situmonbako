@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('search_historys', function (Blueprint $table) {
-            $table->unsignedInteger('count')->default(0);
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('category_id');
+            // 他のカラムの定義を追加
+            $table->timestamps();
+
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 
@@ -25,8 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('search_historys', function (Blueprint $table) {
-            $table->dropColumn('count');
-        });
+        Schema::dropIfExists('categories');
     }
 };
