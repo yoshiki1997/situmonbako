@@ -113,7 +113,7 @@ class PostController extends Controller{
         $stackOverFlowJa = $Pagenator->stackExchangePagenator($stackOverFlowJa);
         
         $rankings = Like::select('url', 'title', 'created_at', \DB::raw('count(*) as count'))
-            ->groupBy('url')
+            ->groupBy('url', 'title', 'created_at')
             ->orderByDesc('count')
             ->get();
            
@@ -286,7 +286,7 @@ class PostController extends Controller{
         $stackOverFlowJa = $Pagenator->stackExchangePagenator($stackOverFlowJa);
 
         $rankings = Like::select('url', 'title', 'created_at', \DB::raw('count(*) as count'))
-            ->groupBy('url')
+            ->groupBy('url', 'title', 'created_at')
             ->orderByDesc('count')
             ->get();
            
