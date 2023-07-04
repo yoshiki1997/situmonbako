@@ -112,7 +112,7 @@ class PostController extends Controller{
         $stackOverFlowJa = $stackExchangeClient->fetchNokeywordQuestionsJAStackExchange();
         $stackOverFlowJa = $Pagenator->stackExchangePagenator($stackOverFlowJa);
         
-        $rankings = Like::select('url', \DB::raw('count(*) as count'))
+        $rankings = Like::select('url', 'title', 'created_at', \DB::raw('count(*) as count'))
             ->groupBy('url')
             ->orderByDesc('count')
             ->get();
@@ -156,6 +156,7 @@ class PostController extends Controller{
             $rankings->setPageName('rankings_page');
             }
             //dd($questions, $data, $qittaposts, $stackExchangeQuestions);
+            //dd($rankings);
 
 
         return view('posts.index')->with([
@@ -284,6 +285,13 @@ class PostController extends Controller{
         $stackOverFlowJa = $stackExchangeClient->fetchQuestionsStackExchangeJA($search);
         $stackOverFlowJa = $Pagenator->stackExchangePagenator($stackOverFlowJa);
 
+        $rankings = Like::select('url', 'title', 'created_at', \DB::raw('count(*) as count'))
+            ->groupBy('url')
+            ->orderByDesc('count')
+            ->get();
+           
+        $rankings = $rankings->toArray();//dd($rankings);
+        $rankings = $Pagenator->RankingsPagenator($rankings);
 
         // 使用者のユーザーID
         if(auth()->check()) {
@@ -310,6 +318,15 @@ class PostController extends Controller{
         if($stackExchangeQuestions){
         $stackExchangeQuestions->setPageName('stackExchangeQuestions_page');
         }
+        if($stackGameDevQuestions){
+        $stackGameDevQuestions->setPageName('stackGameDevQuestions_page');
+        }
+        if($stackOverFlowJa){
+        $stackOverFlowJa->setPageName('stackOverFlowJa_page');
+        }
+        if($rankings){
+        $rankings->setPageName('rankings_page');
+        }
         //dd($questions, $data, $qittaposts, $stackExchangeQuestions);
 
         return view("posts/search")->with([
@@ -319,6 +336,7 @@ class PostController extends Controller{
             'stackExchangeQuestions' => $stackExchangeQuestions,
             'stackGameDevQuestions' => $stackGameDevQuestions,
             'stackOverFlowJa' => $stackOverFlowJa,
+            'rankings' => $rankings,
             'user_id' => $userId,
             'likes' => $likes,
             'search' => $search,
