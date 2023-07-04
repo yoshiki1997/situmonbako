@@ -5,9 +5,20 @@
     </x-slot>
 
     <div class="flex justify-center">
-        <form action="{{ route('history.search') }}" method="GET" class="w-full flex justify-center">
-        <input type="text" name="keyword" class="w-7/12 text-black" placeholder="キーワードを入力してください">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md ml-8">検索</button>
+        <form action="{{ route('history.search') }}" method="GET" class="w-full flex flex-col justify-center">
+            <div class="relative flex justify-center">
+            <input type="text" name="keyword" class="w-7/12 text-black rounded-md" placeholder="キーワードを入力してください">
+            <div class="flex justify-end">
+            <button type="submit" class="absolute text-white px-4 py-2 rounded-md ml-8">
+                <i class="fa-brands fa-searchengin" style="color: #df32e2;">{{ __('検索') }}</i>
+            </button>
+            </div>
+            </div>
+            <div class="flex justify-center mt-4">
+                <div class=" w-7/12 justify-start">
+                    <input type="text" name="category" class=" w-52 text-black rounded-md" default="false" placeholder="categoryを入力してください"/>
+                </div>
+            </div>
         </form>
     </div>
 
