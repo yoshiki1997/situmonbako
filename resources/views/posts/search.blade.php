@@ -427,7 +427,7 @@
 
             </div>
 
-            <div id="ranking-content" class="conten hidden">
+            <div id="ranking-content" class="content hidden">
 
             <div class="container">
               <div class="card-body mx-4">
