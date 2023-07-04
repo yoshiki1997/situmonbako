@@ -207,7 +207,7 @@ class DashboardController extends Controller
             echo "エラーメッセージ: " . $e->getMessage() . "\n";
             echo "ファイル: " . $e->getFile() . "\n";
             echo "行番号: " . $e->getLine() . "\n";
-            return redirect()->back();
+            //return redirect()->back();
         }
     }
 
