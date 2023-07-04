@@ -102,7 +102,7 @@
                             <input type="hidden" name="url" value="https://www.youtube.com/watch?v={{ $data['id']['videoId'] }}"/>
                             <input type="hidden" name="title" value="{{$data['snippet']['title']}}"/>
                             <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
-                            <a href="https://www.youtube.com/watch?v={{ $data['id']['videoId'] }}">
+                            <a href="https://www.youtube.com/watch?v={{ $data['id']['videoId'] }}" target="_blank" class="hover:text-gray-200 font-semibold dark:hover:text-black" onclick="this.closest('form').submit();">
                               
                         <div class="relative">
                             <img src="{{ $data['snippet']['thumbnails']['default']['url'] }}" alt="Video Thumbnail" class="w-full h-auto">
@@ -163,7 +163,7 @@
                             <input type="hidden" name="url" value="{{$qittapost['url']}}"/>
                             <input type="hidden" name="title" value="{{ $qittapost['title'] }}"/>
                           <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
-                              <a href="{{$qittapost['url']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
+                              <a href="{{$qittapost['url']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold" onclick="this.closest('form').submit();">
                               <div class="flex items-center mt-2">
                                   <img src="{{ $qittapost['user']['profile_image_url'] }}" alt="User Avatar" class="w-6 h-6 rounded-full" onerror="this.onerror=null; this.src='/images/noimage.jpg'">
                                   <span class="text-sm ml-2">{{ $qittapost['user']['id'] }}</span>
@@ -219,7 +219,7 @@
                             <input type="hidden" name="url" value="{{$question['link']}}"/>
                             <input type="hidden" name="title" value="{{ $question['title'] }}"/>
                           <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
-                              <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
+                              <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold" onclick="this.closest('form').submit();">
                               <div class="flex items-center mt-2">
                               @if(isset($question['owner']['profile_image']))
                                 <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full" onerror="this.onerror=null; this.src='/images/noimage.jpg'">
@@ -283,7 +283,7 @@
                             <input type="hidden" name="url" value="{{$question['link']}}"/>
                             <input type="hidden" name="title" value="{{ $question['title'] }}"/>
                           <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
-                              <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
+                              <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold" onclick="this.closest('form').submit();">
                               <div class="flex items-center mt-2">
                               @if(isset($question['owner']['profile_image']))
                                 <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full" onerror="this.onerror=null; this.src='/images/noimage.jpg'">
@@ -348,7 +348,7 @@
                             <input type="hidden" name="url" value="{{$question['link']}}"/>
                             <input type="hidden" name="title" value="{{ $question['title'] }}"/>
                           <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
-                              <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
+                              <a href="{{$question['link']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold" onclick="this.closest('form').submit();">
                               <div class="flex items-center mt-2">
                               @if(isset($question['owner']['profile_image']))
                                 <img src="{{ $question['owner']['profile_image'] }}" alt="User Avatar" class="w-6 h-6 rounded-full" onerror="this.onerror=null; this.src='/images/noimage.jpg'">
@@ -410,7 +410,7 @@
                             <input type="hidden" name="url" value="{{$ranking['url']}}"/>
                             <input type="hidden" name="title" value="{{ $ranking['title'] }}"/>
                           <li class="border border-gray-500 rounded-lg p-4 shadow-md bg-gray-300 duration-300 ease-in-out hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-100 dark:hover:text-black">
-                              <a href="{{$ranking['url']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold">
+                              <a href="{{$ranking['url']}}" target="_blank" class="hover:text-gray-200 dark:hover:text-black font-semibold" onclick="this.closest('form').submit();">
                               <div class="flex items-center mt-2">
                               </div>
                               <h2 class="my-6 font-semibold h-[3em] overflow-hidden">{{ $ranking['title'] }}</h2>
