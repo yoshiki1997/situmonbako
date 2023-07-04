@@ -25,7 +25,7 @@ class DashboardController extends Controller
         $this->history = new History();
         $this->Tips = new Tips();
         $this->like = new Like();
-        $this->user = new UserImage();
+        $this->userimage = new UserImage();
         $this->user = new User();
     }
 
@@ -200,7 +200,7 @@ class DashboardController extends Controller
             // 適切なリダイレクト先にリダイレクトする
             return redirect()->back();
 
-        } catch (\Expection $e) {
+        } catch (\Exception $e) {
             // CSRFトークンを再生成して、二重送信対策
             $request->session()->regenerateToken(); // <- この一行を追加
             DB::rollback();
@@ -286,9 +286,9 @@ class DashboardController extends Controller
         $categories = array_map('trim', $categories);
 
         foreach($categories as $category){
-            $update_problem = Category::where('category', $category)->first();
-            if($update_problem){
-                $updateProblem = Problem::find($id);
+            $existCategory = Category::where('category', $category)->first();
+            if($existCategory){
+                $update_problem = Problem::find($id);
                 $existPivot = $update_problem->categories()->where('category', $existCategory)->exists();
                 if($existPivot){
                     continue;

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('url')->unique(); // 代わりにurlカラムを追加
+            $table->string('title')->nullable();
+            
             $table->timestamps();
         });
     }
