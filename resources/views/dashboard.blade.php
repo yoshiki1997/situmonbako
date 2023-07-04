@@ -66,10 +66,10 @@
                                     <option value="0" class="text-black">済</option>
                                 </select>
 
-                                <input type="hidden" id="tagValueUpdate" name="categories">
                                 <label for="category" class="mb-4 ml-4 text-gray-700 dark:text-white">Category:</label>
                                 <input type="text" name="category" id="categoriesUpdate" placeholder="カテゴリーを入れてください" class="text-black border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <button id="addUpdateCategoryButton" type="button" class="bg-blue-500 text-white px-4 py-2 ml-4 rounded">追加</button><br>
+                                <input type="hidden" id="tagValueUpdate" name="categories">
 
                                 <div id="tagContainer_update" class="flex flex-wrap gap-2 mb-2 tagContainer_update">
                                     Category:
@@ -238,10 +238,10 @@
                                         
                                             <div class="flex flex-col my-2">
                                                 <div class="flex mb-2">
-                                                <input type="hidden" id="tagValue_{{$id}}" class="tagValueInput2" name="categories" value="{{  $problem->categories->pluck('category')->implode(',') }}">
                                                 <input type="text" name="category" id="categories_{{$id}}" class="text-black hover:underline mr-4 font-bold border border-gray-300 rounded-md px-2 py-1 categories" value="{{ $problem->category }}" />
                                                 <button type="button" class="bg-blue-500 text-white px-4 py-2 ml-4 rounded addProblemCategoryButton" data-id="{{$id}}">追加</button><br>
                                                 </div>
+                                                <input type="hidden" id="tagValue_{{$id}}" class="tagValueInput2" name="categories" value="{{  $problem->categories->pluck('category')->implode(',') }}">
                                                 <div id="tagContainer_{{$id}}" class="flex flex-wrap gap-2 mb-2 tagContainer2">
                                                     Category:
                                                         @if(isset($problem->categories))
@@ -751,6 +751,13 @@ if (categoryUpdate.value.trim() !== '') {
 
   deleteButton.addEventListener("click", () => {
     tag.remove();
+    const tagValue = text.textContent;
+    const tagValueArray = tagValueInputUpdate.value.split(',');
+    const index = tagValueArray.indexOf(tagValue);
+    if (index !== -1) {
+        tagValueArray.splice(index, 1);
+        tagValueInputUpdate.value = tagValueArray.join(',');
+    }
   });
 
 }
@@ -788,6 +795,17 @@ function createTag2(id) {console.log(this);
 
       deleteButton.addEventListener("click", () => {
         tag.remove();
+        const tagValue = text.textContent;
+        const tagValueArray = closestTagValueInput.value.split(',');
+        const index = tagValueArray.indexOf(tagValue);
+        console.log(tagValue);
+        console.log(tagValueArray);
+        console.log(index);
+
+        if (index !== -1) {
+            tagValueArray.splice(index, 1);
+            closestTagValueInput.value = tagValueArray.join(',');
+        }
       });
 
     }
@@ -819,6 +837,13 @@ function createTag() {
 
       deleteButton.addEventListener("click", () => {
         tag.remove();
+        const tagValue = text.textContent;
+        const tagValueArray = tagValueInput.value.split(',');
+        const index = tagValueArray.indexOf(tagValue);
+        if (index !== -1) {
+            tagValueArray.splice(index, 1);
+            tagValueInput.value = tagValueArray.join(',');
+        }
       });
 
     }
@@ -853,7 +878,21 @@ if(addUpdateCategoryButton){
 // 削除ボタンがクリックされたときの処理
 function handleDeleteButtonClick(event) {
   const targetElement = event.target.closest('span'); // 削除ボタンの親要素を取得
+  const tagValueInput = targetElement.parentElement.previousSibling.previousSibling;console.log(tagValueInput);
+  const text = event.target.previousSibling.previousSibling;console.log(text);
+  const tagValue = text.textContent;console.log(tagValue);
+  const tagValueArray = tagValueInput.value.split(',');
+  const index = tagValueArray.indexOf(tagValue);
   targetElement.remove(); // 親要素を削除
+  console.log(tagValueInput);
+  console.log(text);
+  console.log(tagValue);
+  console.log(tagValueArray);
+  console.log(index);
+        if (index !== -1) {
+            tagValueArray.splice(index, 1);
+            tagValueInput.value = tagValueArray.join(',');
+        }
 }
 
 // 削除ボタンにクリックイベントのリスナーを追加

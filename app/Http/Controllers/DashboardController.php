@@ -176,7 +176,7 @@ class DashboardController extends Controller
                     if($existPivot){
                         continue;
                     }else{
-                        $newProblemId->categories()->attach($existCategory);
+                        $newProblem->categories()->attach($existCategory->id);
                     }
                 }else {
                     $newProblem = Problem::find($newProblemId);
@@ -204,6 +204,10 @@ class DashboardController extends Controller
             // CSRFトークンを再生成して、二重送信対策
             $request->session()->regenerateToken(); // <- この一行を追加
             DB::rollback();
+            echo "エラーメッセージ: " . $e->getMessage() . "\n";
+    echo "ファイル: " . $e->getFile() . "\n";
+    echo "行番号: " . $e->getLine() . "\n";
+            //return redirect()->back();
         }
     }
 
@@ -284,27 +288,34 @@ class DashboardController extends Controller
         
         $categories = explode(',', $request->categories);
         $categories = array_map('trim', $categories);
+        $update_problem = Problem::find($id);
 
         foreach($categories as $category){
-            $existCategory = Category::where('category', $category)->first();
-            if($existCategory){
-                $update_problem = Problem::find($id);
-                $existPivot = $update_problem->categories()->where('category', $existCategory)->exists();
-                if($existPivot){
-                    continue;
-                }else{
-                    $update_problem->categories()->attach($existCategory->id);
+            if($category===""){
+                $existCategory = Category::where('category', $category)->first();
+                if($existCategory){
+                    $existPivot = $update_problem->categories()->where('category_id', $existCategory->id)->exists();
+                    if($existPivot){
+                        continue;
+                    }else{
+                        $update_problem->categories()->attach($existCategory->id);
+                    }
+                }else {
+                    $existPivot = $update_problem->categories()->where('category', $category)->exists();
+                    if($existPivot){
+                        continue;
+                    }else{
+                        $category = Category::create([
+                            'category' => $category,
+                        ]);
+                        $update_problem->categories()->attach($category->id);
+                    }
                 }
-            }else {
-                $update_problem = Problem::find($id);
-                $existPivot = $update_problem->categories()->where('category', $category)->exists();
+            }else{
+                $existCategory = Category::where('category', $category)->first();
+                $existPivot = $update_problem->categories()->where('category_id', $existCategory->id)->exists();
                 if($existPivot){
-                    continue;
-                }else{
-                    $category = Category::create([
-                        'category' => $category,
-                    ]);
-                    $update_problem->categories()->attach($category->id);
+                    $update_problem->categories()->dettach($existCategory->id);
                 }
             }
         }
