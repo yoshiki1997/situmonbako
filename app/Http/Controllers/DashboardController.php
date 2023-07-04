@@ -205,9 +205,9 @@ class DashboardController extends Controller
             $request->session()->regenerateToken(); // <- この一行を追加
             DB::rollback();
             echo "エラーメッセージ: " . $e->getMessage() . "\n";
-    echo "ファイル: " . $e->getFile() . "\n";
-    echo "行番号: " . $e->getLine() . "\n";
-            //return redirect()->back();
+            echo "ファイル: " . $e->getFile() . "\n";
+            echo "行番号: " . $e->getLine() . "\n";
+            return redirect()->back();
         }
     }
 

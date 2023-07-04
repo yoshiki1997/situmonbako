@@ -590,6 +590,8 @@
     </div>
 
     </div>
+    @include('layouts.jumpbutton')
+
     
 </x-app-layout>
 

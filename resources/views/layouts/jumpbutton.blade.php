@@ -2,7 +2,7 @@
     <div class="h-16 max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div class="h-full flex justify-end">
             <div class="fixed bottom-4 right-4">
-                <button id="jumpbutton" type="button" onclick="Jump()" class="hidden">
+                <button id="jumpbutton" type="button" class="hidden">
                     <i class="fa-solid fa-square-caret-up fa-2xl"></i>
                 </button>
             </div>
