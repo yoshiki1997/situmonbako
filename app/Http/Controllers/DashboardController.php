@@ -195,7 +195,7 @@ class DashboardController extends Controller
             // CSRFトークンを再生成して、二重送信対策
             $request->session()->regenerateToken(); // <- この一行を追加
 
-            DB::commit();dd(2);
+            DB::commit();
 
             // 適切なリダイレクト先にリダイレクトする
             return redirect()->back();
@@ -206,7 +206,7 @@ class DashboardController extends Controller
             DB::rollback();
             echo "エラーメッセージ: " . $e->getMessage() . "\n";
             echo "ファイル: " . $e->getFile() . "\n";
-            echo "行番号: " . $e->getLine() . "\n";dd(1);
+            echo "行番号: " . $e->getLine() . "\n";
             //return redirect()->back();
         }
     }

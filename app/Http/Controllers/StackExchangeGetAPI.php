@@ -51,7 +51,7 @@ class StackExchangeGetAPI {
         $pageSize = 50; // 1ページあたりの項目数を50に設定
         $keyword = $search;
 
-        $response = $client->request('GET', 'https://api.stackexchange.com/2.2/questions', [
+        $response = $client->request('GET', 'https://api.stackexchange.com/2.2/search', [
             'query' => [
                 'order' => 'desc',
                 'sort' => 'activity',
@@ -81,7 +81,7 @@ class StackExchangeGetAPI {
         $pageSize = 50; // 1ページあたりの項目数を50に設定
         $keyword = $search;
 
-        $response = $client->request('GET', 'https://api.stackexchange.com/2.2/questions', [
+        $response = $client->request('GET', 'https://api.stackexchange.com/2.2/search', [
             'query' => [
                 'order' => 'desc',
                 'sort' => 'activity',
@@ -109,15 +109,15 @@ class StackExchangeGetAPI {
         //$page = $request->get('page', 1); // デフォルトは1ページ目
         $page = 1;
         $pageSize = 50; // 1ページあたりの項目数を50に設定
-        $keyword = $search;
-
-        $response = $client->request('GET', 'https://api.stackexchange.com/2.2/questions', [
+        $search = urlencode($search);//urlencode($keyword)
+        //dd($search);
+        $response = $client->request('GET', 'https://api.stackexchange.com/2.2/search', [
             'query' => [
                 'order' => 'desc',
                 'sort' => 'activity',
                 'site' => 'ja.stackoverflow',
                 'key' => $apiKey,
-                'intitle' => $keyword,
+                'intitle' => $search,
                 'page' => $page,
                 'pagesize' => $pageSize
             ]
