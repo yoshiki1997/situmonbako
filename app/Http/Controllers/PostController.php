@@ -227,6 +227,9 @@ class PostController extends Controller{
 
         $tag = $request->input("tags");
 
+        $existTag = Tag::where('tag_name', $tag)->first();
+
+
         $limit = $request->input('limit');
 
         $client = new \GuzzleHttp\Client();
@@ -235,7 +238,7 @@ class PostController extends Controller{
 
         $Pagenator = new Pagenator();
 
-        if(isset($tag))
+        if(isset($tag) && !$existTag == null)
         {
     
         $response = $client->request(

@@ -67,7 +67,7 @@
                         <div class="mx-8">
                             <p class="text-xl mt-2 mb-2">{{ $problem->title }}</p>
                             <p>{{ $problem->description }}</p>
-                            <div class=" overflow-hidden rounded-xl">d
+                            <div class=" overflow-hidden rounded-xl">
                             <div class=" w-full max-h-64 overflow-y-scroll overflow-hidden rounded-xl">
                             @if($problem->problemUrl)
                             @foreach($problem->problemUrl as $problemUrl)
