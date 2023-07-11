@@ -24,7 +24,8 @@ class FollowSeeder extends Seeder
 
         foreach ($userIds as $followerId) {
             foreach ($userIds as $followingId) {
-                if ($followerId !== $followingId) {
+                $existFollow = !Follow::where('follower_id', $followerId)->where('following_id', $followingId)->exists();
+                if ($followerId !== $followingId && $existFollow) {
                     Follow::factory()->create([
                         'follower_id' => $followerId,
                         'following_id' => $followingId,
