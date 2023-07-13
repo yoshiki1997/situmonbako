@@ -1,5 +1,5 @@
 <nav class="mt-2">
-    <ul class="flex justify-center space-x-4">
+    <ul class="flex justify-center space-x-4 overflow-x-auto">
         <li id="teratail-item" class="index-list cursor-pointer px-4 py-2 rounded-md">Teratail</li>
         <li id="youtube-item" class="index-list cursor-pointer px-4 py-2 rounded-md">YouTube</li>
         <li id="qitta-item" class="index-list cursor-pointer px-4 py-2 rounded-md">Qitta</li>

@@ -178,6 +178,13 @@
                         <h2 class="text-xl">あなたの失敗履歴</h2>
                     </div>
                     <div id="problem-accordion" class="accordion-content">
+                    <div class="flex justify-start">
+                        <a href="#form">
+                            <div class="border-2 border-blue-600 rounded-lg px-3 py-2 text-blue-400 cursor-pointer hover:bg-blue-600 hover:text-blue-200">
+                            <button>{{ __('投稿フォームへ移動') }}</button>
+                            </div>
+                        </a>
+                    </div>
                     <div class="flex justify-end">
                     <label for="toggle" class="flex items-center cursor-pointer">
                         <div class="relative">
