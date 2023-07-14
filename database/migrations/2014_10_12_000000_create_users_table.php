@@ -31,6 +31,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        // 関連するテーブルのデータを削除する
+    DB::table('related_table')->delete();
+
+    // users テーブルを削除する
+    Schema::dropIfExists('users');
     }
 };
