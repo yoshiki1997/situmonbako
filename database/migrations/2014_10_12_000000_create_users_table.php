@@ -31,10 +31,12 @@ return new class extends Migration
      */
     public function down()
     {
-        // 関連するテーブルのデータを削除する
-    DB::table('related_table')->delete();
+        // 外部キー制約を一時的に無効化する
+        Schema::disableForeignKeyConstraints();
 
-    // users テーブルを削除する
-    Schema::dropIfExists('users');
+        Schema::dropIfExists('users');
+
+        // 外部キー制約を再度有効化する
+        Schema::enableForeignKeyConstraints();
     }
 };
